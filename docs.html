@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docs — MultiWealth</title>
-  <meta name="description" content="MultiWealth documentation — installation, setup, and user guide." />
+  <meta name="description" content="MultiWealth documentation — installation, setup, and user guide for every module: accounts, transactions, investments, watchlist, properties, tangibles, pots, cheques, and the bank product catalog." />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -120,12 +120,14 @@
 
     /* ── TYPOGRAPHY ── */
     .docs-main h1 {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
       font-size: 36px; font-weight: 800; letter-spacing: -0.03em;
       line-height: 1.1; margin-bottom: 12px;
       background: linear-gradient(135deg, #e8f0fb 0%, #a0b4cc 50%, #7C6FF7 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .docs-main h2 {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
       font-size: 22px; font-weight: 700; letter-spacing: -0.02em;
       color: var(--text); margin: 48px 0 16px;
       padding-top: 48px; border-top: 1px solid var(--border);
@@ -309,27 +311,35 @@
       <a href="#add-account"   class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Add an Account</a>
       <a href="#import"        class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Import Statements</a>
       <a href="#transactions"  class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Transactions</a>
+      <a href="#payees"        class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Payees &amp; Recurring</a>
+      <a href="#cheques"       class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Cheques</a>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Investments</div>
       <a href="#brokers"       class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Add a Broker</a>
       <a href="#holdings"      class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Add Holdings</a>
       <a href="#inv-history"   class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Transaction History</a>
+      <a href="#watchlist"     class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Live Watchlist</a>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">Properties & Assets</div>
+      <div class="sidebar-section-label">Properties & Tangibles</div>
       <a href="#properties"    class="sidebar-link"><span class="sidebar-dot" style="background:#FBBF24"></span>Add a Property</a>
-      <a href="#assets"        class="sidebar-link"><span class="sidebar-dot" style="background:#FBBF24"></span>Other Assets</a>
+      <a href="#tangibles"     class="sidebar-link"><span class="sidebar-dot" style="background:#FBBF24"></span>Vehicles &amp; Valuables</a>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Planning</div>
-      <a href="#goals"         class="sidebar-link"><span class="sidebar-dot" style="background:#FF453A"></span>Goals</a>
-      <a href="#budget"        class="sidebar-link"><span class="sidebar-dot" style="background:#FF453A"></span>Monthly Budget</a>
+      <a href="#pots"          class="sidebar-link"><span class="sidebar-dot" style="background:#64D2FF"></span>Pots &amp; Goals</a>
+      <a href="#planner"       class="sidebar-link"><span class="sidebar-dot" style="background:#64D2FF"></span>Monthly Planner</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Intelligence</div>
+      <a href="#catalog"       class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Product Catalog</a>
+      <a href="#alerts"        class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Rate Alerts</a>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Reference</div>
       <a href="#banks"         class="sidebar-link"><span class="sidebar-dot" style="background:var(--muted)"></span>Supported Banks</a>
-      <a href="#tips"          class="sidebar-link"><span class="sidebar-dot" style="background:var(--muted)"></span>Tips & Shortcuts</a>
+      <a href="#tips"          class="sidebar-link"><span class="sidebar-dot" style="background:var(--muted)"></span>Tips &amp; Shortcuts</a>
     </div>
   </aside>
 
@@ -340,7 +350,7 @@
     <div id="overview" class="section-anchor">
       <h1>Documentation</h1>
       <p class="page-intro">
-        Everything you need to install MultiWealth, connect your accounts, and get a complete picture of your wealth. This guide walks you through each module step by step.
+        Everything you need to install MultiWealth, connect your accounts, and get a complete picture of your wealth — bank accounts, investments with a live watchlist, properties, vehicles and valuables, pots, cheques, and a 28-bank product catalog that alerts you when rates change.
       </p>
     </div>
 
@@ -352,7 +362,7 @@
       <tbody>
         <tr><td><strong>Node.js</strong></td><td><span class="badge badge-green">20+</span></td><td>Runs both the frontend and backend</td></tr>
         <tr><td><strong>PostgreSQL</strong></td><td><span class="badge badge-blue">14+</span></td><td>Stores all your financial data locally</td></tr>
-        <tr><td><strong>Python</strong></td><td><span class="badge badge-amber">3.9+</span></td><td>Required for PDF statement parsing</td></tr>
+        <tr><td><strong>Python</strong></td><td><span class="badge badge-amber">3.11+ · optional</span></td><td>Powers the bank-intel sidecar that keeps the product catalog fresh</td></tr>
       </tbody>
     </table>
     <div class="callout tip">
@@ -402,7 +412,7 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
     <h3>4. Set up the database</h3>
     <div class="code-block">
       <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre>cd server && npx prisma db push && cd ..</pre>
+      <pre>cd server && npx prisma migrate deploy && cd ..</pre>
     </div>
     <p>This creates all the required tables in your PostgreSQL database automatically.</p>
 
@@ -426,14 +436,14 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
 
     <!-- ADD ACCOUNT -->
     <h2 id="add-account" class="section-anchor">Add a Bank Account</h2>
-    <p>Bank accounts are the foundation of MultiWealth. Each account tracks its balance, statement history, and transactions.</p>
+    <p>Bank accounts are the foundation of MultiWealth. Each account tracks its balance, statement history, and transactions — with proper credit-card semantics (utilization, available credit, even overpaid cards) and the new UAE dirham symbol throughout.</p>
 
     <div class="steps">
       <div class="step-row">
         <div class="step-num">1</div>
         <div class="step-body">
-          <div class="step-title">Go to the Finance page</div>
-          <div class="step-desc">Click <strong>Finance</strong> in the left sidebar. You'll see your bank accounts grouped by bank.</div>
+          <div class="step-title">Go to the Accounts page</div>
+          <div class="step-desc">Click <strong>Accounts</strong> in the left sidebar. You'll see your bank accounts grouped by bank.</div>
         </div>
       </div>
       <div class="step-row">
@@ -447,19 +457,17 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
         <div class="step-num">3</div>
         <div class="step-body">
           <div class="step-title">Fill in the details</div>
-          <div class="step-desc">Select your bank, account type (Current, Savings, Credit Card, Loan), enter the account name, and the current balance. MultiWealth auto-detects the bank brand and color.</div>
+          <div class="step-desc">Select your bank, account type (Current, Savings, Fixed Deposit, Credit Card, Loan), enter the account name, and the current balance. MultiWealth styles the card with the bank's brand color automatically. Savings accounts can model their interest-credit schedule; credit cards take a limit and track utilization.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">4</div>
         <div class="step-body">
           <div class="step-title">Save</div>
-          <div class="step-desc">Click <strong>Save</strong>. The account appears in your Finance page instantly, grouped under its bank.</div>
+          <div class="step-desc">Click <strong>Save</strong>. The account appears instantly, grouped under its bank. You can later link it to its product in the bank catalog to track its rates and perks.</div>
         </div>
       </div>
     </div>
-
-    <p>Repeat for all your accounts across RAKBank, FAB, ADCB, Emirates NBD, Mashreq, and Citi.</p>
 
     <!-- IMPORT STATEMENTS -->
     <h2 id="import" class="section-anchor">Import Statements</h2>
@@ -477,7 +485,7 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
         <div class="step-num">2</div>
         <div class="step-body">
           <div class="step-title">Open the account</div>
-          <div class="step-desc">Click on the account you want to import into. This opens the Account Detail panel on the right.</div>
+          <div class="step-desc">Click on the account you want to import into. This opens the Account Detail panel.</div>
         </div>
       </div>
       <div class="step-row">
@@ -513,11 +521,48 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
     <p>Every imported or manually added transaction appears in the Transactions list. You can filter, search, and categorize them.</p>
     <ul>
       <li><strong>Categories</strong> — Assign a category (Groceries, Dining, Transport, etc.) to each transaction</li>
-      <li><strong>Payees</strong> — Tag the merchant or sender for easy grouping</li>
+      <li><strong>Payees</strong> — Tag the merchant or sender; payee rules apply themselves to future imports</li>
       <li><strong>Notes</strong> — Add a private note to any transaction</li>
       <li><strong>Manual entry</strong> — Click <strong>+ Add Transaction</strong> to log a cash payment or transfer not captured by a statement</li>
-      <li><strong>Filters</strong> — Filter by date range, account, category, or amount</li>
+      <li><strong>Filters</strong> — Filter by date range, account, category, payee, or amount — each filter clears individually</li>
+      <li><strong>Status</strong> — Imported transactions are Confirmed; manual ones show <strong>To Review</strong> until a statement confirms them</li>
     </ul>
+
+    <!-- PAYEES & RECURRING -->
+    <h2 id="payees" class="section-anchor">Payees &amp; Recurring</h2>
+    <p>Raw bank descriptors are noisy — <code>CARREFOUR MAF DXB 0091</code> and <code>CARREFOUR HYP DEIRA</code> are the same place. MultiWealth normalizes them for you.</p>
+    <ul>
+      <li><strong>Payee rules</strong> — keyword rules map descriptors to clean payees automatically on import; unmatched descriptors land in a review queue where one click creates the rule</li>
+      <li><strong>Recurring detection</strong> — repeated payments (rent, DEWA, salaries, subscriptions) are detected as series automatically; promote a series to a recurring rule and future occurrences post themselves</li>
+      <li><strong>Upcoming view</strong> — detected and rule-based recurring payments surface in an upcoming-payments widget so month-end never surprises you</li>
+    </ul>
+
+    <!-- CHEQUES -->
+    <h2 id="cheques" class="section-anchor">Cheques</h2>
+    <p>Cheques are still everywhere in UAE life — rent, school fees, deposits. MultiWealth tracks each cheque through its real lifecycle.</p>
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Add a cheque</div>
+          <div class="step-desc">Go to <strong>Cheques</strong> in the sidebar, click <strong>+ Add Cheque</strong>, and enter the cheque number, payee, amount, linked account, and due date.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Move it through its lifecycle</div>
+          <div class="step-desc">Statuses follow real banking rules: <strong>issued → deposited → cleared</strong> (or <strong>bounced</strong> / <strong>cancelled</strong>). Cleared and cancelled are terminal — illegal jumps are rejected, so the history always tells the truth.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">See the impact</div>
+          <div class="step-desc">Marking a cheque cleared creates the matching account transaction. Cheques can also contribute to a goal — a rent cheque counts toward the pot that planned for it.</div>
+        </div>
+      </div>
+    </div>
 
     <!-- BROKERS -->
     <h2 id="brokers" class="section-anchor">Add a Broker</h2>
@@ -535,7 +580,7 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
         <div class="step-num">2</div>
         <div class="step-body">
           <div class="step-title">Add a Broker</div>
-          <div class="step-desc">Click <strong>+ Add Broker</strong>. Enter the broker name (e.g. Saxo Bank, Binance, Al Ramz) and currency.</div>
+          <div class="step-desc">Click <strong>+ Add Broker</strong>. Enter the broker name (e.g. Saxo Bank, Binance, Al Ramz) and currency. The broker gets a stable auto-assigned color.</div>
         </div>
       </div>
       <div class="step-row">
@@ -549,7 +594,7 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
 
     <!-- HOLDINGS -->
     <h2 id="holdings" class="section-anchor">Add Holdings</h2>
-    <p>Each holding is an individual stock, ETF, crypto, or fund position under a broker.</p>
+    <p>Each holding is an individual stock, ETF, crypto, cash, or fund position under a broker.</p>
 
     <div class="steps">
       <div class="step-row">
@@ -563,14 +608,14 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
         <div class="step-num">2</div>
         <div class="step-body">
           <div class="step-title">Add a Holding</div>
-          <div class="step-desc">Click <strong>+ Add Holding</strong>. Enter the ticker symbol (e.g. <code>AAPL</code>, <code>BTC</code>, <code>VTI</code>), asset type, quantity, and average cost.</div>
+          <div class="step-desc">Click <strong>+ Add Holding</strong>. Search the ticker (e.g. <code>AAPL</code>, <code>BTC</code>, <code>ALDAR</code>), set the asset type, quantity, and average cost. Non-AED holdings show the FX rate used for conversion.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">3</div>
         <div class="step-body">
           <div class="step-title">View performance</div>
-          <div class="step-desc">Once saved, the holding shows your quantity, average cost, current value, and gain/loss.</div>
+          <div class="step-desc">Once saved, the holding shows your quantity, average cost, current value, and gain/loss — all consolidated in AED at the portfolio level.</div>
         </div>
       </div>
     </div>
@@ -585,9 +630,20 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
       <li>Your average cost and total P&amp;L update automatically</li>
     </ul>
 
+    <!-- WATCHLIST -->
+    <h2 id="watchlist" class="section-anchor">Live Watchlist</h2>
+    <p>A dedicated live-prices board with real-time charts — including <strong>ADX and DFM</strong>, the UAE exchanges most trackers ignore, alongside US markets and crypto.</p>
+    <ul>
+      <li><strong>Open it</strong> from Investments → <strong>Live Prices</strong> (opens in its own tab, works standalone)</li>
+      <li><strong>Add any symbol</strong> as <code>EXCHANGE:TICKER</code> — <code>ADX:ALDAR</code>, <code>DFM:EMAAR</code>, <code>NASDAQ:AAPL</code>, <code>BINANCE:BTCUSDT</code>; typing an unknown symbol in the filter offers to add it</li>
+      <li><strong>Three views</strong> — Cards (mini charts), Fit (the whole board sized to your screen), and List (dense, sortable); your choice is remembered</li>
+      <li><strong>Arrange it</strong> — drag to reorder, group by exchange, filter with <code>/</code>, flip ranges 1D / 1M / 3M / 1Y</li>
+      <li><strong>Market hours</strong> — open/closed dots per exchange, Ramadan-aware for ADX and DFM</li>
+    </ul>
+
     <!-- PROPERTIES -->
     <h2 id="properties" class="section-anchor">Add a Property</h2>
-    <p>Track your real estate portfolio with full detail — purchase price, current value, equity, leases, and milestones.</p>
+    <p>Track your real estate portfolio with full detail — purchase price, current value, equity, leases, tenants, and off-plan payment plans with milestones.</p>
 
     <div class="steps">
       <div class="step-row">
@@ -601,84 +657,85 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
         <div class="step-num">2</div>
         <div class="step-body">
           <div class="step-title">Click "Add Property"</div>
-          <div class="step-desc">Enter the property name, address, purchase price, current estimated value, and type (apartment, villa, off-plan, etc.).</div>
+          <div class="step-desc">Enter the property name, address (building / floor / unit), type (apartment, villa, townhouse, penthouse, land), beds and baths, size, view, and the purchase details. Co-owned? Record each owner's share — your dashboards show a "my share" lens.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">3</div>
         <div class="step-body">
           <div class="step-title">Add leases (optional)</div>
-          <div class="step-desc">If the property is rented out, add a lease with the tenant name, rent amount, start and end date. MultiWealth tracks rental income automatically.</div>
+          <div class="step-desc">If the property is rented out, add a lease with the tenant, rent amount and schedule. Rent payments are validated against the lease period and tracked as income automatically.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">4</div>
         <div class="step-body">
-          <div class="step-title">Add payment milestones (off-plan)</div>
-          <div class="step-desc">For off-plan properties, add each payment milestone with its due date and amount. Upcoming payments appear on your dashboard.</div>
+          <div class="step-title">Add a payment plan (off-plan)</div>
+          <div class="step-desc">For off-plan properties, load the milestone schedule with due dates and amounts. Milestone status follows your cumulative payments (money is fungible — no false "overdue" on a specific milestone), and a what-if estimator shows your share at any ownership percentage.</div>
         </div>
       </div>
     </div>
 
-    <!-- ASSETS -->
-    <h2 id="assets" class="section-anchor">Other Assets</h2>
-    <p>Track vehicles, valuables, cash holdings, and any other asset class that contributes to your net worth.</p>
+    <!-- TANGIBLES -->
+    <h2 id="tangibles" class="section-anchor">Vehicles &amp; Valuables</h2>
+    <p>The <strong>Tangibles</strong> page holds everything physical you own — filtered by category pills: Real Estate, Vehicles, Valuables.</p>
     <ul>
-      <li>Go to <strong>Assets</strong> in the sidebar</li>
-      <li>Click <strong>+ Add Asset</strong> and choose a type: Vehicle, Valuable, Cash, or Custom</li>
-      <li>Enter the name, current value, and optional purchase price</li>
-      <li>The asset is immediately reflected in your net worth total</li>
+      <li><strong>Vehicles</strong> — pick the kind (car, SUV, van, motorcycle, bike, boat, trailer); the plate number is the identifier; attach documents like the Mulkiya, insurance policies, and insurance quotations</li>
+      <li><strong>Valuables</strong> — watches, jewellery, art; the serial number is the identifier</li>
+      <li><strong>Value tracking</strong> — record the purchase price and update the current value over time; a signed <strong>vs purchase</strong> delta appears once a current value exists</li>
+      <li><strong>Ownership</strong> — co-owned assets carry share percentages, and the page totals respect your share</li>
     </ul>
 
-    <!-- GOALS -->
-    <h2 id="goals" class="section-anchor">Goals</h2>
-    <p>Set financial goals and track progress over time.</p>
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Go to Goals in the sidebar</div>
-          <div class="step-desc">Click <strong>Goals</strong> from the left navigation.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Create a Goal</div>
-          <div class="step-desc">Click <strong>+ Add Goal</strong>. Enter a name (e.g. "Emergency Fund"), target amount, and target date.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Track progress</div>
-          <div class="step-desc">Update the current saved amount over time. A progress bar shows how close you are to your target.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BUDGET -->
-    <h2 id="budget" class="section-anchor">Monthly Budget</h2>
-    <p>Set a monthly spending plan by category and monitor actual spend against it.</p>
+    <!-- POTS -->
+    <h2 id="pots" class="section-anchor">Pots &amp; Goals</h2>
+    <p>Pots are how MultiWealth does budgeting — evidence-based, not vibes. There are three kinds, each badged so you always know what a number means:</p>
     <ul>
-      <li>Go to <strong>Goals → Monthly Budget</strong></li>
+      <li><strong>Envelope</strong> — money you're actively setting aside (vacation, emergency fund). Envelopes accept contributions from income and transfers, fill a progress bar, and celebrate when funded 🎉</li>
+      <li><strong>Tracker</strong> — mirrors a real balance (a loan being repaid, a linked account). Read-only where the truth lives elsewhere</li>
+      <li><strong>View</strong> — a grouping lens over other numbers; never double-counts</li>
+    </ul>
+    <p><strong>Sinking funds:</strong> link an envelope to a payment plan and it computes its own monthly set-aside from the real contractual due dates — "set aside AED 8,400/mo to hit the next milestone" — instead of you guessing.</p>
+
+    <!-- PLANNER -->
+    <h2 id="planner" class="section-anchor">Monthly Planner</h2>
+    <p>Set a monthly plan by category and monitor actual spend against it.</p>
+    <ul>
       <li>Set your estimated monthly income</li>
       <li>Allocate a budget to each spending category (Groceries, Dining, Transport, etc.)</li>
-      <li>As transactions come in, actual spend is tracked automatically against each category limit</li>
+      <li>Envelope contributions appear as protected planner lines — the planner refuses to double-count money that's both "budgeted" and "set aside"</li>
+      <li>As transactions come in, actual spend tracks automatically against each category limit</li>
     </ul>
 
     <div class="callout tip">
       <span class="callout-icon">💡</span>
-      <div class="callout-body"><strong>Budget resets monthly</strong>The budget view always shows the current calendar month. Import your latest statement at the start of each month to keep it up to date.</div>
+      <div class="callout-body"><strong>Planner resets monthly</strong>The planner always shows the current calendar month. Import your latest statement at the start of each month to keep it honest.</div>
     </div>
+
+    <!-- CATALOG -->
+    <h2 id="catalog" class="section-anchor">Product Catalog</h2>
+    <p>MultiWealth ships with a living catalog of the UAE banking market: <strong>700+ products across 28 banks</strong> — credit cards, savings accounts, fixed deposits, loans — kept fresh by a scheduled scraper sidecar.</p>
+    <ul>
+      <li><strong>Browse</strong> — open <strong>Catalog</strong> and filter by bank or product category; Islamic products carry their structure (Murabaha, Wakala, etc.)</li>
+      <li><strong>Compare</strong> — put cards, deposits, or loans side-by-side: rates, fees, tenors, rewards</li>
+      <li><strong>Link your accounts</strong> — connect a real account to its catalog product from either side; your account card then knows its own perks and rates</li>
+    </ul>
+
+    <!-- ALERTS -->
+    <h2 id="alerts" class="section-anchor">Rate Alerts</h2>
+    <p>Every re-scrape diffs every product against its last known state. Changes become a human-readable alert feed:</p>
+    <ul>
+      <li><strong>Rate moves</strong> — "FAB Fixed Deposit 12M: 4.10% → 4.35%" with good/bad-news coloring</li>
+      <li><strong>Perk changes</strong> — rewards restructures, fee waivers, tenor table updates; click any alert to expand the exact before/after</li>
+      <li><strong>Lifecycle</strong> — new products appear, and products pulled from a bank's site are archived (never silently deleted)</li>
+    </ul>
 
     <!-- SUPPORTED BANKS -->
     <h2 id="banks" class="section-anchor">Supported UAE Banks</h2>
-    <p>MultiWealth can auto-detect and parse statements from the following banks:</p>
+    <p>Statement import auto-detects and parses PDF/CSV statements from these banks:</p>
     <table>
       <thead><tr><th>Bank</th><th>PDF</th><th>CSV</th></tr></thead>
       <tbody>
-        <tr><td><strong>RAKBank</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
+        <tr><td><strong>RAKBANK</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
         <tr><td><strong>First Abu Dhabi Bank (FAB)</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
         <tr><td><strong>ADCB</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
         <tr><td><strong>Emirates NBD</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
@@ -686,13 +743,19 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
         <tr><td><strong>Citi UAE</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
       </tbody>
     </table>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body"><strong>Catalog coverage is wider</strong>The product catalog and rate alerts cover <strong>28 UAE banks</strong> — statement parsing covers the six above, with more added over time.</div>
+    </div>
 
     <!-- TIPS -->
     <h2 id="tips" class="section-anchor">Tips &amp; Shortcuts</h2>
     <ul>
       <li><strong>Import often</strong> — Download and import statements monthly to keep your net worth accurate</li>
-      <li><strong>Start with banking</strong> — Add all your bank accounts first, then investments, then properties</li>
+      <li><strong>Start with banking</strong> — Add all your bank accounts first, then investments, then properties and tangibles</li>
       <li><strong>Duplicate detection is automatic</strong> — You can safely re-import the same statement; duplicates are skipped</li>
+      <li><strong>Dates are dd/mm/yyyy</strong> — UAE style, everywhere in the app</li>
+      <li><strong>Archive, don't delete</strong> — financial records archive reversibly by default; hard delete is always a deliberate second step</li>
       <li><strong>Everything is local</strong> — Your data lives in PostgreSQL on your machine. Back it up with <code>pg_dump multiwealth &gt; backup.sql</code></li>
       <li><strong>Restore a backup</strong> — <code>psql multiwealth &lt; backup.sql</code></li>
     </ul>
@@ -714,13 +777,18 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
     <a href="#add-account"   class="otp-link">Add an Account</a>
     <a href="#import"        class="otp-link">Import Statements</a>
     <a href="#transactions"  class="otp-link">Transactions</a>
+    <a href="#payees"        class="otp-link">Payees &amp; Recurring</a>
+    <a href="#cheques"       class="otp-link">Cheques</a>
     <a href="#brokers"       class="otp-link">Add a Broker</a>
     <a href="#holdings"      class="otp-link">Add Holdings</a>
     <a href="#inv-history"   class="otp-link">Investment History</a>
+    <a href="#watchlist"     class="otp-link">Live Watchlist</a>
     <a href="#properties"    class="otp-link">Add a Property</a>
-    <a href="#assets"        class="otp-link">Other Assets</a>
-    <a href="#goals"         class="otp-link">Goals</a>
-    <a href="#budget"        class="otp-link">Monthly Budget</a>
+    <a href="#tangibles"     class="otp-link">Vehicles &amp; Valuables</a>
+    <a href="#pots"          class="otp-link">Pots &amp; Goals</a>
+    <a href="#planner"       class="otp-link">Monthly Planner</a>
+    <a href="#catalog"       class="otp-link">Product Catalog</a>
+    <a href="#alerts"        class="otp-link">Rate Alerts</a>
     <a href="#banks"         class="otp-link">Supported Banks</a>
     <a href="#tips"          class="otp-link">Tips &amp; Shortcuts</a>
   </aside>
