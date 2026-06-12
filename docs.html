@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docs — MultiWealth</title>
+  <meta name="description" content="MultiWealth documentation — installation, setup, and user guide." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #000610;
+      --card:   #010e21;
+      --card2:  #071a2e;
+      --border: rgba(255,255,255,0.07);
+      --text:   #F0F0F5;
+      --muted:  #78788C;
+      --subtle: #6e87a8;
+      --brand:  #7C6FF7;
+      --green:  #30D158;
+      --red:    #FF453A;
+      --blue:   #0A84FF;
+      --amber:  #FBBF24;
+      --sidebar-w: 260px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #252B3B; border-radius: 4px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      background: rgba(0,6,16,0.88);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .nav-logo-txt {
+      font-size:14px; font-weight:700;
+      background:linear-gradient(135deg,#7C6FF7 0%,#e8f0fb 50%,#FBBF24 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .nav-right { display:flex; align-items:center; gap:16px; }
+    .nav-right a {
+      font-size:13px; font-weight:500; color:var(--muted);
+      text-decoration:none; transition:color 0.15s;
+    }
+    .nav-right a:hover { color:var(--text); }
+    .nav-badge {
+      font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em;
+      background:rgba(124,111,247,0.12); border:1px solid rgba(124,111,247,0.25);
+      color:#a89df7; padding:3px 10px; border-radius:999px;
+      font-family:'JetBrains Mono',monospace;
+    }
+
+    /* ── LAYOUT ── */
+    .docs-layout {
+      display: flex;
+      padding-top: 56px;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: fixed;
+      top: 56px; left: 0; bottom: 0;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      background: #000915;
+      padding: 24px 0;
+    }
+    .sidebar::-webkit-scrollbar { width: 3px; }
+    .sidebar::-webkit-scrollbar-thumb { background: #1a2a3a; }
+
+    .sidebar-section { margin-bottom: 28px; }
+    .sidebar-section-label {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.14em; color: var(--muted);
+      padding: 0 20px; margin-bottom: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 20px; font-size: 13px; font-weight: 500;
+      color: var(--subtle); text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 0.15s; border-radius: 0;
+    }
+    .sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .sidebar-link.active {
+      color: #a89df7; border-left-color: #7C6FF7;
+      background: rgba(124,111,247,0.06);
+    }
+    .sidebar-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+    /* ── MAIN CONTENT ── */
+    .docs-main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      max-width: 780px;
+      padding: 48px 56px 120px;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .docs-main h1 {
+      font-size: 36px; font-weight: 800; letter-spacing: -0.03em;
+      line-height: 1.1; margin-bottom: 12px;
+      background: linear-gradient(135deg, #e8f0fb 0%, #a0b4cc 50%, #7C6FF7 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .docs-main h2 {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text); margin: 48px 0 16px;
+      padding-top: 48px; border-top: 1px solid var(--border);
+    }
+    .docs-main h2:first-of-type { margin-top: 32px; }
+    .docs-main h3 {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      margin: 28px 0 10px;
+    }
+    .docs-main p {
+      font-size: 14px; color: var(--subtle); line-height: 1.8; margin-bottom: 16px;
+    }
+    .docs-main ul, .docs-main ol {
+      padding-left: 20px; margin-bottom: 16px;
+    }
+    .docs-main li {
+      font-size: 14px; color: var(--subtle); line-height: 1.8; margin-bottom: 6px;
+    }
+    .docs-main strong { color: var(--text); font-weight: 600; }
+    .docs-main a { color: #7C6FF7; text-decoration: none; }
+    .docs-main a:hover { text-decoration: underline; }
+
+    .page-intro {
+      font-size: 16px; color: var(--subtle); line-height: 1.75;
+      margin-bottom: 0; padding-bottom: 32px; border-bottom: 1px solid var(--border);
+    }
+
+    /* ── CODE ── */
+    .code-block {
+      background: #000915; border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; margin: 16px 0;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .code-lang {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .code-copy {
+      font-size: 11px; color: var(--muted); cursor: pointer;
+      background: none; border: none; padding: 2px 8px;
+      border-radius: 4px; transition: all 0.15s; font-family: inherit;
+    }
+    .code-copy:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .code-block pre {
+      padding: 16px; overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px; line-height: 1.7; color: #c0d4e8;
+    }
+    .code-block pre .c  { color: var(--muted); }      /* comment */
+    .code-block pre .k  { color: #a89df7; }            /* keyword */
+    .code-block pre .s  { color: #30D158; }            /* string */
+    .code-block pre .v  { color: #FBBF24; }            /* value */
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: #a89df7;
+      background: rgba(124,111,247,0.1); border: 1px solid rgba(124,111,247,0.2);
+      padding: 1px 6px; border-radius: 4px;
+    }
+
+    /* ── STEPS ── */
+    .steps { display:flex; flex-direction:column; gap:0; margin: 20px 0; }
+    .step-row {
+      display: flex; gap: 16px;
+      padding: 20px 0; border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .step-row:last-child { border-bottom: none; }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(124,111,247,0.12); border: 1px solid rgba(124,111,247,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #7C6FF7;
+      font-family: 'JetBrains Mono', monospace; margin-top: 2px;
+    }
+    .step-body { flex: 1; }
+    .step-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .step-desc { font-size: 13px; color: var(--subtle); line-height: 1.7; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      display: flex; gap: 12px; padding: 14px 16px;
+      border-radius: 10px; margin: 20px 0;
+      border-left: 3px solid;
+    }
+    .callout-icon { flex-shrink: 0; font-size: 16px; line-height: 1.4; }
+    .callout-body { font-size: 13px; line-height: 1.7; }
+    .callout-body strong { display: block; margin-bottom: 3px; font-size: 13px; }
+    .callout.tip    { background:rgba(48,209,88,0.06);  border-color:#30D158; }
+    .callout.tip    .callout-body { color:#a0c8b0; }
+    .callout.tip    .callout-body strong { color:#30D158; }
+    .callout.warn   { background:rgba(251,191,36,0.06); border-color:#FBBF24; }
+    .callout.warn   .callout-body { color:#c8b880; }
+    .callout.warn   .callout-body strong { color:#FBBF24; }
+    .callout.info   { background:rgba(10,132,255,0.06); border-color:#0A84FF; }
+    .callout.info   .callout-body { color:#90aec8; }
+    .callout.info   .callout-body strong { color:#0A84FF; }
+
+    /* ── TABLE ── */
+    table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13px; }
+    th { text-align:left; padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.1); color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; font-family:'JetBrains Mono',monospace; }
+    td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--subtle); vertical-align:top; }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:rgba(255,255,255,0.02); }
+
+    /* ── BADGE ── */
+    .badge {
+      display:inline-flex; align-items:center;
+      font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em;
+      padding:2px 8px; border-radius:999px;
+      font-family:'JetBrains Mono',monospace;
+    }
+    .badge-green { background:rgba(48,209,88,0.12); color:#30D158; }
+    .badge-blue  { background:rgba(10,132,255,0.12); color:#0A84FF; }
+    .badge-amber { background:rgba(251,191,36,0.12); color:#FBBF24; }
+
+    /* ── SECTION ANCHOR ── */
+    .section-anchor { scroll-margin-top: 80px; }
+
+    /* ── ON THIS PAGE ── */
+    .on-this-page {
+      position: fixed; top: 56px; right: 0;
+      width: 220px; padding: 28px 20px;
+      border-left: 1px solid var(--border);
+      height: calc(100vh - 56px); overflow-y: auto;
+    }
+    .otp-label {
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--muted); margin-bottom: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .otp-link {
+      display: block; font-size: 12px; color: var(--subtle);
+      text-decoration: none; padding: 4px 0;
+      border-left: 2px solid transparent; padding-left: 10px;
+      transition: all 0.15s;
+    }
+    .otp-link:hover { color: var(--text); border-left-color: rgba(124,111,247,0.4); }
+
+    @media (max-width: 1100px) { .on-this-page { display: none; } }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .docs-main { margin-left: 0; padding: 32px 24px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="favicon.svg" width="22" height="22" alt="MultiWealth" />
+    <span class="nav-logo-txt">MultiWealth</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html">Home</a>
+    <a href="index.html#features">Features</a>
+    <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank">GitHub</a>
+    <span class="nav-badge">Docs</span>
+  </div>
+</nav>
+
+<div class="docs-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Getting Started</div>
+      <a href="#overview"      class="sidebar-link active"><span class="sidebar-dot" style="background:#7C6FF7"></span>Overview</a>
+      <a href="#prerequisites" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Prerequisites</a>
+      <a href="#installation"  class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Installation</a>
+      <a href="#first-launch"  class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>First Launch</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Banking</div>
+      <a href="#add-account"   class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Add an Account</a>
+      <a href="#import"        class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Import Statements</a>
+      <a href="#transactions"  class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Transactions</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Investments</div>
+      <a href="#brokers"       class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Add a Broker</a>
+      <a href="#holdings"      class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Add Holdings</a>
+      <a href="#inv-history"   class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Transaction History</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Properties & Assets</div>
+      <a href="#properties"    class="sidebar-link"><span class="sidebar-dot" style="background:#FBBF24"></span>Add a Property</a>
+      <a href="#assets"        class="sidebar-link"><span class="sidebar-dot" style="background:#FBBF24"></span>Other Assets</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Planning</div>
+      <a href="#goals"         class="sidebar-link"><span class="sidebar-dot" style="background:#FF453A"></span>Goals</a>
+      <a href="#budget"        class="sidebar-link"><span class="sidebar-dot" style="background:#FF453A"></span>Monthly Budget</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Reference</div>
+      <a href="#banks"         class="sidebar-link"><span class="sidebar-dot" style="background:var(--muted)"></span>Supported Banks</a>
+      <a href="#tips"          class="sidebar-link"><span class="sidebar-dot" style="background:var(--muted)"></span>Tips & Shortcuts</a>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="docs-main">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="section-anchor">
+      <h1>Documentation</h1>
+      <p class="page-intro">
+        Everything you need to install MultiWealth, connect your accounts, and get a complete picture of your wealth. This guide walks you through each module step by step.
+      </p>
+    </div>
+
+    <!-- PREREQUISITES -->
+    <h2 id="prerequisites" class="section-anchor">Prerequisites</h2>
+    <p>Before installing, make sure you have the following installed on your machine:</p>
+    <table>
+      <thead><tr><th>Tool</th><th>Version</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Node.js</strong></td><td><span class="badge badge-green">20+</span></td><td>Runs both the frontend and backend</td></tr>
+        <tr><td><strong>PostgreSQL</strong></td><td><span class="badge badge-blue">14+</span></td><td>Stores all your financial data locally</td></tr>
+        <tr><td><strong>Python</strong></td><td><span class="badge badge-amber">3.9+</span></td><td>Required for PDF statement parsing</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body"><strong>macOS tip</strong>Install all three via Homebrew: <code>brew install node postgresql python</code></div>
+    </div>
+
+    <!-- INSTALLATION -->
+    <h2 id="installation" class="section-anchor">Installation</h2>
+
+    <h3>1. Clone the repository</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre>git clone git@github.com:Halkhoori2000/MultiWealth.git   (private beta - request access)
+cd MultiWealth</pre>
+    </div>
+
+    <h3>2. Install dependencies</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre><span class="c"># Frontend dependencies</span>
+npm install
+
+<span class="c"># Backend dependencies</span>
+cd server && npm install && cd ..</pre>
+    </div>
+
+    <h3>3. Configure environment variables</h3>
+    <p>Create a <code>.env</code> file in the project root:</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">.env (root)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre>VITE_API_BASE_URL=<span class="s">http://localhost:3001</span>
+VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
+    </div>
+
+    <p>Create a <code>.env</code> file inside the <code>server/</code> folder:</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">.env (server/)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre>DATABASE_URL=<span class="s">"postgresql://user:password@localhost:5432/multiwealth"</span></pre>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body"><strong>Replace credentials</strong>Swap <code>user</code> and <code>password</code> with your actual PostgreSQL username and password. Run <code>psql -U postgres</code> to check what credentials you have.</div>
+    </div>
+
+    <h3>4. Set up the database</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre>cd server && npx prisma db push && cd ..</pre>
+    </div>
+    <p>This creates all the required tables in your PostgreSQL database automatically.</p>
+
+    <!-- FIRST LAUNCH -->
+    <h2 id="first-launch" class="section-anchor">First Launch</h2>
+    <p>Start the backend and frontend in two separate terminal windows:</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Terminal 1 — Backend</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre>cd server && npm run dev</pre>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Terminal 2 — Frontend</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre>npm run dev</pre>
+    </div>
+    <p>Open <a href="http://localhost:5173" target="_blank">http://localhost:5173</a> in your browser. You'll see the MultiWealth dashboard — empty for now.</p>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body"><strong>Keep both terminals running</strong>The frontend talks to the backend on port 3001. Both need to be running at the same time for the app to work.</div>
+    </div>
+
+    <!-- ADD ACCOUNT -->
+    <h2 id="add-account" class="section-anchor">Add a Bank Account</h2>
+    <p>Bank accounts are the foundation of MultiWealth. Each account tracks its balance, statement history, and transactions.</p>
+
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Go to the Finance page</div>
+          <div class="step-desc">Click <strong>Finance</strong> in the left sidebar. You'll see your bank accounts grouped by bank.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Click "Add Account"</div>
+          <div class="step-desc">Hit the <strong>+ Add Account</strong> button in the top-right corner. A drawer slides in from the right.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Fill in the details</div>
+          <div class="step-desc">Select your bank, account type (Current, Savings, Credit Card, Loan), enter the account name, and the current balance. MultiWealth auto-detects the bank brand and color.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Save</div>
+          <div class="step-desc">Click <strong>Save</strong>. The account appears in your Finance page instantly, grouped under its bank.</div>
+        </div>
+      </div>
+    </div>
+
+    <p>Repeat for all your accounts across RAKBank, FAB, ADCB, Emirates NBD, Mashreq, and Citi.</p>
+
+    <!-- IMPORT STATEMENTS -->
+    <h2 id="import" class="section-anchor">Import Statements</h2>
+    <p>The fastest way to populate your transaction history is to import bank statements. MultiWealth supports both PDF and CSV formats.</p>
+
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Download your statement</div>
+          <div class="step-desc">Log in to your bank's online portal and download your statement as a PDF or CSV. Any date range works.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Open the account</div>
+          <div class="step-desc">Click on the account you want to import into. This opens the Account Detail panel on the right.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Click "Import Statement"</div>
+          <div class="step-desc">Find the <strong>Import Statement</strong> button in the account panel. A file picker appears.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Drop your file</div>
+          <div class="step-desc">Drag and drop the PDF or CSV file onto the drop zone, or click to browse. MultiWealth auto-detects the bank format, statement period, and parses all transactions.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Review and confirm</div>
+          <div class="step-desc">A preview shows the detected transactions. Duplicates (transactions already in the system) are highlighted and excluded automatically. Click <strong>Import</strong> to save.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body"><strong>Import multiple periods</strong>You can import statements from different months on the same account. Duplicates are automatically detected and skipped, so there's no risk of double-counting.</div>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <h2 id="transactions" class="section-anchor">Transactions</h2>
+    <p>Every imported or manually added transaction appears in the Transactions list. You can filter, search, and categorize them.</p>
+    <ul>
+      <li><strong>Categories</strong> — Assign a category (Groceries, Dining, Transport, etc.) to each transaction</li>
+      <li><strong>Payees</strong> — Tag the merchant or sender for easy grouping</li>
+      <li><strong>Notes</strong> — Add a private note to any transaction</li>
+      <li><strong>Manual entry</strong> — Click <strong>+ Add Transaction</strong> to log a cash payment or transfer not captured by a statement</li>
+      <li><strong>Filters</strong> — Filter by date range, account, category, or amount</li>
+    </ul>
+
+    <!-- BROKERS -->
+    <h2 id="brokers" class="section-anchor">Add a Broker</h2>
+    <p>Brokers group your investment holdings. Add one broker per platform you use.</p>
+
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Go to Investments</div>
+          <div class="step-desc">Click <strong>Investments</strong> in the left sidebar.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Add a Broker</div>
+          <div class="step-desc">Click <strong>+ Add Broker</strong>. Enter the broker name (e.g. Saxo Bank, Binance, Al Ramz) and currency.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Save</div>
+          <div class="step-desc">The broker appears in your Investments page. Now you can add holdings inside it.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOLDINGS -->
+    <h2 id="holdings" class="section-anchor">Add Holdings</h2>
+    <p>Each holding is an individual stock, ETF, crypto, or fund position under a broker.</p>
+
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Open a broker</div>
+          <div class="step-desc">Click on the broker row to expand it.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Add a Holding</div>
+          <div class="step-desc">Click <strong>+ Add Holding</strong>. Enter the ticker symbol (e.g. <code>AAPL</code>, <code>BTC</code>, <code>VTI</code>), asset type, quantity, and average cost.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">View performance</div>
+          <div class="step-desc">Once saved, the holding shows your quantity, average cost, current value, and gain/loss.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVESTMENT HISTORY -->
+    <h2 id="inv-history" class="section-anchor">Investment Transaction History</h2>
+    <p>Log every buy, sell, dividend, and interest event for accurate cost-basis tracking.</p>
+    <ul>
+      <li>Click any holding, then <strong>Add Transaction</strong></li>
+      <li>Choose the type: <strong>Buy</strong>, <strong>Sell</strong>, <strong>Dividend</strong>, or <strong>Interest</strong></li>
+      <li>Enter the date, quantity, and price per unit</li>
+      <li>Your average cost and total P&amp;L update automatically</li>
+    </ul>
+
+    <!-- PROPERTIES -->
+    <h2 id="properties" class="section-anchor">Add a Property</h2>
+    <p>Track your real estate portfolio with full detail — purchase price, current value, equity, leases, and milestones.</p>
+
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Go to Properties</div>
+          <div class="step-desc">Click <strong>Properties</strong> in the left sidebar.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Click "Add Property"</div>
+          <div class="step-desc">Enter the property name, address, purchase price, current estimated value, and type (apartment, villa, off-plan, etc.).</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Add leases (optional)</div>
+          <div class="step-desc">If the property is rented out, add a lease with the tenant name, rent amount, start and end date. MultiWealth tracks rental income automatically.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Add payment milestones (off-plan)</div>
+          <div class="step-desc">For off-plan properties, add each payment milestone with its due date and amount. Upcoming payments appear on your dashboard.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASSETS -->
+    <h2 id="assets" class="section-anchor">Other Assets</h2>
+    <p>Track vehicles, valuables, cash holdings, and any other asset class that contributes to your net worth.</p>
+    <ul>
+      <li>Go to <strong>Assets</strong> in the sidebar</li>
+      <li>Click <strong>+ Add Asset</strong> and choose a type: Vehicle, Valuable, Cash, or Custom</li>
+      <li>Enter the name, current value, and optional purchase price</li>
+      <li>The asset is immediately reflected in your net worth total</li>
+    </ul>
+
+    <!-- GOALS -->
+    <h2 id="goals" class="section-anchor">Goals</h2>
+    <p>Set financial goals and track progress over time.</p>
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Go to Goals in the sidebar</div>
+          <div class="step-desc">Click <strong>Goals</strong> from the left navigation.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Create a Goal</div>
+          <div class="step-desc">Click <strong>+ Add Goal</strong>. Enter a name (e.g. "Emergency Fund"), target amount, and target date.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Track progress</div>
+          <div class="step-desc">Update the current saved amount over time. A progress bar shows how close you are to your target.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUDGET -->
+    <h2 id="budget" class="section-anchor">Monthly Budget</h2>
+    <p>Set a monthly spending plan by category and monitor actual spend against it.</p>
+    <ul>
+      <li>Go to <strong>Goals → Monthly Budget</strong></li>
+      <li>Set your estimated monthly income</li>
+      <li>Allocate a budget to each spending category (Groceries, Dining, Transport, etc.)</li>
+      <li>As transactions come in, actual spend is tracked automatically against each category limit</li>
+    </ul>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body"><strong>Budget resets monthly</strong>The budget view always shows the current calendar month. Import your latest statement at the start of each month to keep it up to date.</div>
+    </div>
+
+    <!-- SUPPORTED BANKS -->
+    <h2 id="banks" class="section-anchor">Supported UAE Banks</h2>
+    <p>MultiWealth can auto-detect and parse statements from the following banks:</p>
+    <table>
+      <thead><tr><th>Bank</th><th>PDF</th><th>CSV</th></tr></thead>
+      <tbody>
+        <tr><td><strong>RAKBank</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
+        <tr><td><strong>First Abu Dhabi Bank (FAB)</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
+        <tr><td><strong>ADCB</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
+        <tr><td><strong>Emirates NBD</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
+        <tr><td><strong>Mashreq</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
+        <tr><td><strong>Citi UAE</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- TIPS -->
+    <h2 id="tips" class="section-anchor">Tips &amp; Shortcuts</h2>
+    <ul>
+      <li><strong>Import often</strong> — Download and import statements monthly to keep your net worth accurate</li>
+      <li><strong>Start with banking</strong> — Add all your bank accounts first, then investments, then properties</li>
+      <li><strong>Duplicate detection is automatic</strong> — You can safely re-import the same statement; duplicates are skipped</li>
+      <li><strong>Everything is local</strong> — Your data lives in PostgreSQL on your machine. Back it up with <code>pg_dump multiwealth &gt; backup.sql</code></li>
+      <li><strong>Restore a backup</strong> — <code>psql multiwealth &lt; backup.sql</code></li>
+    </ul>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body"><strong>Found an issue?</strong>Open a GitHub issue at <a href="https://github.com/Halkhoori2000/multiwealth-site/issues" target="_blank">github.com/Halkhoori2000/MultiWealth/issues</a></div>
+    </div>
+
+  </main>
+
+  <!-- ── ON THIS PAGE ── -->
+  <aside class="on-this-page">
+    <div class="otp-label">On this page</div>
+    <a href="#overview"      class="otp-link">Overview</a>
+    <a href="#prerequisites" class="otp-link">Prerequisites</a>
+    <a href="#installation"  class="otp-link">Installation</a>
+    <a href="#first-launch"  class="otp-link">First Launch</a>
+    <a href="#add-account"   class="otp-link">Add an Account</a>
+    <a href="#import"        class="otp-link">Import Statements</a>
+    <a href="#transactions"  class="otp-link">Transactions</a>
+    <a href="#brokers"       class="otp-link">Add a Broker</a>
+    <a href="#holdings"      class="otp-link">Add Holdings</a>
+    <a href="#inv-history"   class="otp-link">Investment History</a>
+    <a href="#properties"    class="otp-link">Add a Property</a>
+    <a href="#assets"        class="otp-link">Other Assets</a>
+    <a href="#goals"         class="otp-link">Goals</a>
+    <a href="#budget"        class="otp-link">Monthly Budget</a>
+    <a href="#banks"         class="otp-link">Supported Banks</a>
+    <a href="#tips"          class="otp-link">Tips &amp; Shortcuts</a>
+  </aside>
+
+</div>
+
+<script>
+  // Copy button
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1800);
+    });
+  }
+
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('.section-anchor, h2[id]');
+  const links = document.querySelectorAll('.sidebar-link');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('h2[id], div[id]').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

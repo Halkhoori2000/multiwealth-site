@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MultiWealth — Your wealth, beautifully organized.</title>
+  <meta name="description" content="A private, self-hosted wealth dashboard for UAE finances. Bank accounts, investments, properties, vehicles, valuables, pots and cheques — plus a 28-bank product catalog with rate-change alerts. Your data never leaves your machine." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #000610;
+      --card:    #010e21;
+      --card2:   #071a2e;
+      --border:  rgba(255,255,255,0.07);
+      --text:    #F0F0F5;
+      --muted:   #78788C;
+      --subtle:  #6e87a8;
+      --brand:   #7C6FF7;
+      --gold:    #FBBF24;
+      --green:   #30D158;
+      --red:     #FF453A;
+      --blue:    #0A84FF;
+      --radius:  16px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #252B3B; border-radius: 4px; }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #progress {
+      position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200;
+      background: linear-gradient(90deg, #7C6FF7 0%, #FBBF24 50%, #0A84FF 100%);
+      transform: scaleX(0); transform-origin: left;
+      box-shadow: 0 0 12px rgba(124,111,247,0.5);
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    .grad-text {
+      background: linear-gradient(135deg, #e8f0fb 0%, #b0c4de 45%, #7C6FF7 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .grad-brand {
+      background: linear-gradient(135deg, #7C6FF7 0%, #e8f0fb 55%, #FBBF24 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .grad-shimmer {
+      background: linear-gradient(120deg, #e8f0fb 0%, #b0c4de 30%, #7C6FF7 48%, #FBBF24 60%, #e8f0fb 78%);
+      background-size: 220% 220%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: shimmer 9s ease-in-out infinite alternate;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes aurora1 { from{transform:translate(0,0) scale(1)} to{transform:translate(80px,60px) scale(1.1)} }
+    @keyframes aurora2 { from{transform:translate(0,0) scale(1)} to{transform:translate(-70px,-60px) scale(0.92)} }
+    @keyframes aurora3 { from{transform:translate(0,0) scale(1)} to{transform:translate(-40px,50px) scale(1.15)} }
+    @keyframes float  { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-10px)} }
+    @keyframes float2 { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-6px)} }
+    @keyframes line-draw { from{stroke-dashoffset:1000} to{stroke-dashoffset:0} }
+    @keyframes shine  { to{transform:translateX(300%) skew(-12deg)} }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.65)} }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    @keyframes shimmer { from{background-position:0% 50%} to{background-position:100% 50%} }
+
+    /* ── 3D REVEAL ── */
+    .reveal {
+      opacity: 0; filter: blur(3px);
+      transform: perspective(900px) rotateX(9deg) translateY(28px) scale(0.985);
+      transform-origin: 50% 100%;
+      transition: opacity 0.7s ease, filter 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+      will-change: transform, opacity;
+    }
+    .reveal.in { opacity: 1; filter: blur(0); transform: perspective(900px) rotateX(0) translateY(0) scale(1); }
+    .d1{transition-delay:.08s} .d2{transition-delay:.16s} .d3{transition-delay:.24s}
+    .d4{transition-delay:.32s} .d5{transition-delay:.4s}
+
+    /* ── TILT (mouse-tracking 3D cards) ── */
+    [data-tilt] {
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative;
+    }
+    [data-tilt] .glare {
+      content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+      background: radial-gradient(420px circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,0.10), transparent 55%);
+      opacity:0; transition:opacity 0.3s; z-index:5;
+    }
+    [data-tilt]:hover .glare { opacity:1; }
+    [data-tilt] > :not(.glare) { transform: translateZ(24px); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+      border-bottom: 1px solid transparent;
+      transition: background 0.25s, border-color 0.25s, backdrop-filter 0.25s;
+    }
+    nav.scrolled {
+      background: rgba(0,6,16,0.82);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      border-bottom-color: var(--border);
+    }
+    .nav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+    .nav-logo-txt {
+      font-size:15px; font-weight:700;
+      background:linear-gradient(135deg,#7C6FF7 0%,#e8f0fb 50%,#FBBF24 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+    .nav-links a {
+      font-size:13px; font-weight:500; color:var(--muted); text-decoration:none;
+      transition:color 0.15s; position:relative;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-2px; left:0; right:0; height:1px;
+      background:#7C6FF7; transform:scaleX(0); transform-origin:left;
+      transition:transform 0.3s ease;
+    }
+    .nav-links a:hover { color:var(--text); }
+    .nav-links a:hover::after { transform:scaleX(1); }
+
+    .btn {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:8px 18px; border-radius:8px;
+      font-size:13px; font-weight:600; text-decoration:none;
+      transition:all 0.2s; cursor:pointer; border:none; white-space:nowrap;
+    }
+    .btn-primary {
+      background:#7C6FF7; color:#fff;
+      position:relative; overflow:hidden;
+    }
+    .btn-primary::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.22) 50%,transparent 60%);
+      transform:translateX(-120%) skew(-12deg);
+    }
+    .btn-primary:hover { background:#8f84f9; transform:translateY(-1px); box-shadow:0 4px 20px rgba(124,111,247,0.4); }
+    .btn-primary:hover::after { animation:shine 0.5s ease forwards; }
+    .btn-ghost {
+      background:rgba(255,255,255,0.05); color:var(--muted);
+      border:1px solid var(--border);
+    }
+    .btn-ghost:hover { background:rgba(255,255,255,0.09); color:var(--text); }
+    .btn-lg { padding:13px 28px; font-size:15px; border-radius:10px; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; overflow: hidden;
+      padding: 144px 24px 100px; text-align: center;
+    }
+
+    /* WebGL particle field */
+    #hero3d {
+      position:absolute; inset:0; width:100%; height:100%;
+      pointer-events:none; opacity:0; transition:opacity 1.6s ease;
+    }
+    #hero3d.live { opacity:1; }
+    .hero-fade {
+      position:absolute; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(ellipse 90% 70% at 50% 30%, transparent 40%, rgba(0,6,16,0.55) 100%),
+        linear-gradient(180deg, rgba(0,6,16,0.25) 0%, transparent 26%, transparent 62%, var(--bg) 97%);
+    }
+
+    /* Aurora (fallback + colour wash under the particles) */
+    .aurora { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .blob {
+      position:absolute; border-radius:999px;
+      filter:blur(90px); mix-blend-mode:screen; opacity:0.26;
+    }
+    .blob-1 { width:560px;height:560px;background:#7C6FF7;top:-80px;left:-100px; animation:aurora1 22s ease-in-out infinite alternate; }
+    .blob-2 { width:480px;height:480px;background:#FBBF24;bottom:-60px;right:-80px; animation:aurora2 26s ease-in-out infinite alternate; }
+    .blob-3 { width:380px;height:380px;background:#0A84FF;top:30%;left:35%; animation:aurora3 18s ease-in-out infinite alternate; }
+
+    /* Noise overlay */
+    .noise {
+      position:absolute; inset:0; pointer-events:none;
+      opacity:0.045; mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:220px 220px;
+    }
+
+    .hero-content { position:relative; z-index:1; max-width:860px; margin:0 auto; }
+
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 14px; border-radius:999px; margin-bottom:28px;
+      font-size:10.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+      background:rgba(124,111,247,0.1); border:1px solid rgba(124,111,247,0.28); color:#a89df7;
+      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    }
+    .pulse-dot {
+      width:6px; height:6px; border-radius:50%;
+      background:#7C6FF7; box-shadow:0 0 8px #7C6FF7;
+      animation:pulse-dot 2s ease-in-out infinite;
+    }
+
+    .hero h1 {
+      font-size:clamp(44px,7.5vw,80px); font-weight:900;
+      line-height:1.03; letter-spacing:-0.04em; margin-bottom:24px;
+    }
+    .hero p {
+      font-size:clamp(15px,2vw,18px); color:#8fa6c4;
+      max-width:540px; margin:0 auto 40px; line-height:1.75;
+      text-shadow:0 1px 22px rgba(0,6,16,0.95), 0 0 8px rgba(0,6,16,0.8);
+    }
+    .hero-ctas { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:84px; }
+
+    /* ── HERO MOCKUP — 3D stage ── */
+    .hero-stage { perspective:1600px; max-width:980px; margin:0 auto; position:relative; }
+    .hero-mockup {
+      position:relative;
+      transform-style:preserve-3d;
+      transform:rotateX(16deg) scale(0.97);
+      will-change:transform;
+    }
+    .mockup-window {
+      border-radius:16px; overflow:hidden;
+      border:1px solid rgba(124,111,247,0.22);
+      background:var(--card);
+      box-shadow:0 0 80px rgba(124,111,247,0.16),0 60px 120px rgba(0,0,0,0.65);
+    }
+    .mockup-reflection {
+      position:absolute; left:6%; right:6%; bottom:-46px; height:46px;
+      background:linear-gradient(180deg, rgba(124,111,247,0.16), transparent 80%);
+      filter:blur(14px); border-radius:50%;
+      transform:translateZ(-60px);
+      pointer-events:none;
+    }
+    .window-bar {
+      display:flex; align-items:center; gap:7px;
+      padding:10px 16px; background:#071a2e; border-bottom:1px solid var(--border);
+    }
+    .wdot { width:11px; height:11px; border-radius:50%; }
+    .url-pill {
+      margin:0 auto; height:14px; width:200px; border-radius:6px;
+      background:rgba(255,255,255,0.05);
+      display:flex; align-items:center; justify-content:center;
+      font-size:9px; color:rgba(255,255,255,0.22); letter-spacing:0.02em;
+    }
+    .app-layout { display:flex; height:380px; }
+    .sidebar {
+      width:196px; flex-shrink:0; background:#030d1a;
+      border-right:1px solid var(--border); padding:14px 10px;
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .sidebar-logo { padding:6px 10px 14px; display:flex; align-items:center; gap:7px; }
+    .logo-mark { width:22px; height:22px; border-radius:6px; background:linear-gradient(135deg,#7C6FF7,#FBBF24); flex-shrink:0; }
+    .logo-txt {
+      font-size:11px; font-weight:700;
+      background:linear-gradient(135deg,#7C6FF7,#FBBF24);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .sb {
+      height:30px; border-radius:8px; padding:0 10px;
+      display:flex; align-items:center; gap:8px;
+      font-size:10.5px; font-weight:600; color:#5a708c; text-align:left;
+    }
+    .sb.on { background:rgba(124,111,247,0.15); color:#c3bcfa; }
+    .sb-dot { width:7px; height:7px; border-radius:2.5px; flex-shrink:0; }
+    .main-pane {
+      flex:1; padding:18px; overflow:hidden;
+      display:flex; flex-direction:column; gap:12px; background:#000c1a;
+    }
+    .nw-card {
+      background:var(--card2); border:1px solid var(--border);
+      border-radius:14px; padding:16px 18px 12px;
+    }
+    .nw-row { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
+    .nw-lbl { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:4px; font-family:'JetBrains Mono',monospace; }
+    .nw-val { font-size:22px; font-weight:800; letter-spacing:-0.025em; color:var(--text); }
+    .nw-chg { font-size:11px; color:#30D158; font-weight:600; display:flex; align-items:center; gap:3px; margin-top:3px; }
+    .tabs { display:flex; gap:4px; }
+    .tab { padding:4px 10px; border-radius:6px; font-size:9px; font-weight:600; color:var(--muted); background:rgba(255,255,255,0.03); }
+    .tab.on { background:rgba(124,111,247,0.2); color:#a89df7; }
+    .chart-path {
+      fill:none; stroke:#7C6FF7; stroke-width:2;
+      stroke-dasharray:1000; stroke-dashoffset:1000;
+      animation:line-draw 2.2s ease forwards 0.6s;
+    }
+    .acct-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .acct-card { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:12px; }
+    .acct-bank { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; font-weight:600; margin-bottom:6px; display:flex; align-items:center; gap:5px; font-family:'JetBrains Mono',monospace; }
+    .acct-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .acct-bal { font-size:14px; font-weight:700; color:var(--text); letter-spacing:-0.01em; margin-bottom:7px; }
+    .prog { height:4px; border-radius:2px; background:rgba(255,255,255,0.06); overflow:hidden; }
+    .prog-f { height:100%; border-radius:2px; }
+
+    /* Floating depth chips around the mockup */
+    .float-chip {
+      position:absolute; z-index:3; pointer-events:none;
+      will-change:transform;
+    }
+    .float-chip > span {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:9px 14px; border-radius:12px;
+      font-size:11.5px; font-weight:600; color:#c0d4e8; white-space:nowrap;
+      background:rgba(7,26,46,0.72);
+      border:1px solid rgba(124,111,247,0.25);
+      box-shadow:0 12px 40px rgba(0,0,0,0.5), 0 0 24px rgba(124,111,247,0.08);
+      backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      animation:float 6s ease-in-out infinite;
+    }
+    .float-chip .mono { font-size:10.5px; }
+    .fc-green { color:#30D158; } .fc-red { color:#FF453A; } .fc-gold { color:#FBBF24; }
+
+    /* ── STATS ── */
+    .stats-wrap { padding:0 24px; max-width:1120px; margin:0 auto 100px; position:relative; z-index:2; }
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(5,1fr);
+      border-radius:16px; overflow:hidden; border:1px solid var(--border);
+    }
+    .stat-cell {
+      background:var(--card); padding:24px; text-align:center; border-left:1px solid var(--border);
+      transition:background 0.25s, transform 0.25s;
+    }
+    .stat-cell:hover { background:#071a2e; }
+    .stat-cell:first-child { border-left:none; }
+    .stat-v { font-size:28px; font-weight:700; letter-spacing:-0.025em; color:var(--text); margin-bottom:5px; font-variant-numeric:tabular-nums; }
+    .stat-l { font-size:11px; color:var(--muted); line-height:1.4; }
+
+    /* ── FEATURE SECTIONS ── */
+    .feat { padding:100px 24px; position:relative; overflow:hidden; }
+    .feat.dark { background:#000c1a; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+
+    .feat::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+    }
+    .feat-spot-purple::before {
+      background:radial-gradient(60rem 40rem at 15% 30%, rgba(124,111,247,0.07), transparent 70%);
+    }
+    .feat-spot-blue::before {
+      background:radial-gradient(55rem 38rem at 85% 70%, rgba(10,132,255,0.06), transparent 70%);
+    }
+    .feat-spot-gold::before {
+      background:radial-gradient(50rem 35rem at 80% 20%, rgba(251,191,36,0.06), transparent 70%);
+    }
+    .feat-spot-green::before {
+      background:radial-gradient(50rem 35rem at 15% 70%, rgba(48,209,88,0.06), transparent 70%);
+    }
+
+    .feat-inner {
+      max-width:1120px; margin:0 auto;
+      display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;
+      position:relative; z-index:1;
+    }
+    .feat-inner.rev { direction:rtl; }
+    .feat-inner.rev > * { direction:ltr; }
+
+    .feat-overline {
+      font-family:'JetBrains Mono',monospace;
+      font-size:10.5px; font-weight:600; text-transform:uppercase;
+      letter-spacing:0.14em; color:#7C6FF7; margin-bottom:14px;
+    }
+    .feat-h2 {
+      font-size:clamp(28px,3.5vw,44px); font-weight:800;
+      line-height:1.08; letter-spacing:-0.03em; margin-bottom:18px;
+    }
+    .feat-body { font-size:15px; color:var(--subtle); line-height:1.8; margin-bottom:28px; }
+    .bullets { display:flex; flex-direction:column; gap:11px; }
+    .bullet { display:flex; align-items:center; gap:10px; font-size:13px; color:#99b0d1; }
+    .bchk {
+      width:18px; height:18px; border-radius:50%;
+      background:rgba(48,209,88,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+
+    /* Mockup cards (3D tilt targets) */
+    .mc-stage { perspective:1100px; }
+    .mc {
+      background:var(--card); border-radius:16px; padding:22px;
+      border:1px solid rgba(124,111,247,0.15);
+      box-shadow:0 0 0 1px rgba(124,111,247,0.08), 0 20px 60px rgba(0,0,0,0.45), 0 0 60px rgba(124,111,247,0.06);
+    }
+    .mc-blue {
+      border-color:rgba(10,132,255,0.15);
+      box-shadow:0 0 0 1px rgba(10,132,255,0.08), 0 20px 60px rgba(0,0,0,0.45), 0 0 60px rgba(10,132,255,0.06);
+    }
+    .mc-gold {
+      border-color:rgba(251,191,36,0.15);
+      box-shadow:0 0 0 1px rgba(251,191,36,0.08), 0 20px 60px rgba(0,0,0,0.45), 0 0 60px rgba(251,191,36,0.06);
+    }
+    .mc-green {
+      border-color:rgba(48,209,88,0.15);
+      box-shadow:0 0 0 1px rgba(48,209,88,0.08), 0 20px 60px rgba(0,0,0,0.45), 0 0 60px rgba(48,209,88,0.06);
+    }
+
+    .tx { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+    .tx:last-child { border-bottom:none; }
+    .tx-ico { width:36px; height:36px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; }
+    .tx-name { font-size:12px; font-weight:600; color:var(--text); margin-bottom:2px; }
+    .tx-meta { font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+    .tx-amt { font-size:13px; font-weight:700; margin-left:auto; flex-shrink:0; text-align:right; }
+    .holding { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+    .holding:last-child { border-bottom:none; }
+    .h-tick { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; flex-shrink:0; font-family:'JetBrains Mono',monospace; }
+    .h-sym { font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; }
+    .h-shares { font-size:10px; color:var(--muted); }
+    .h-val { font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; text-align:right; }
+    .h-chg { font-size:10px; font-weight:600; text-align:right; }
+
+    /* Pot envelope rows */
+    .pot { padding:12px 0; border-bottom:1px solid var(--border); }
+    .pot:last-child { border-bottom:none; }
+    .pot-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+    .pot-name { font-size:12px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px; }
+    .pot-amt { font-size:11px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+    .pot-pill {
+      font-size:9px; font-weight:700; padding:2px 8px; border-radius:999px;
+      background:rgba(48,209,88,0.14); color:#30D158;
+    }
+
+    /* ── CAPABILITIES GRID ── */
+    .cap-section { padding:100px 24px; max-width:1120px; margin:0 auto; }
+    .sec-hdr { text-align:center; margin-bottom:60px; }
+    .sec-overline {
+      font-family:'JetBrains Mono',monospace;
+      font-size:10.5px; font-weight:600; text-transform:uppercase;
+      letter-spacing:0.14em; color:#7C6FF7; margin-bottom:14px;
+    }
+    .sec-h2 { font-size:clamp(28px,4vw,44px); font-weight:800; letter-spacing:-0.03em; line-height:1.08; }
+    .cap-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; border-radius:16px; overflow:hidden; border:1px solid var(--border); }
+    .cap-cell {
+      background:var(--card); padding:28px;
+      border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+      transition:background 0.2s, transform 0.3s cubic-bezier(0.22,1,0.36,1);
+    }
+    .cap-cell:hover { background:#071a2e; transform:translateY(-3px); }
+    .cap-cell:nth-child(3n) { border-right:none; }
+    .cap-cell:nth-last-child(-n+3) { border-bottom:none; }
+    .cap-icon {
+      width:38px; height:38px; border-radius:10px; margin-bottom:16px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .cap-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px; }
+    .cap-body { font-size:12px; color:var(--subtle); line-height:1.7; }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { padding:100px 24px; background:#000c1a; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .how-inner { max-width:1120px; margin:0 auto; }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); border-radius:16px; overflow:hidden; border:1px solid var(--border); }
+    .step { background:var(--card); padding:32px; border-left:1px solid var(--border); transition:background 0.2s; }
+    .step:hover { background:#071a2e; }
+    .step:first-child { border-left:none; }
+    .step-n {
+      width:40px; height:40px; border-radius:12px;
+      background:rgba(124,111,247,0.12); border:1px solid rgba(124,111,247,0.25);
+      display:flex; align-items:center; justify-content:center;
+      font-size:16px; font-weight:700; color:#7C6FF7; margin-bottom:20px;
+      font-family:'JetBrains Mono',monospace;
+    }
+    .step-t { font-size:15px; font-weight:700; color:var(--text); margin-bottom:10px; }
+    .step-b { font-size:13px; color:var(--subtle); line-height:1.7; }
+
+    /* ── BANKS MARQUEE ── */
+    .marquee-section {
+      padding:52px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      overflow:hidden; background:var(--card);
+    }
+    .marquee-label {
+      text-align:center; margin-bottom:24px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:10.5px; font-weight:600; text-transform:uppercase;
+      letter-spacing:0.14em; color:var(--muted);
+    }
+    .marquee-track {
+      display:flex; gap:0;
+      mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+    }
+    .marquee-inner {
+      display:flex; gap:12px; flex-shrink:0;
+      animation:marquee 28s linear infinite;
+      padding-right:12px;
+    }
+    .bank-chip {
+      background:rgba(255,255,255,0.04); border:1px solid var(--border);
+      border-radius:8px; padding:10px 22px; white-space:nowrap;
+      font-size:13px; font-weight:500; color:#99b0d1;
+      flex-shrink:0;
+    }
+
+    /* ── PRIVACY ── */
+    .privacy-section { padding:100px 24px; position:relative; overflow:hidden; }
+    .privacy-section::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(55rem 40rem at 50% 50%, rgba(48,209,88,0.05), transparent 70%);
+    }
+    .privacy-inner { max-width:1120px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; position:relative; z-index:1; }
+    .pchk-list { display:flex; flex-direction:column; gap:10px; }
+    .pchk {
+      display:flex; align-items:center; gap:12px; padding:13px 16px;
+      border-radius:12px; background:rgba(48,209,88,0.04);
+      border:1px solid rgba(48,209,88,0.1);
+      transition:border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+    .pchk:hover { background:rgba(48,209,88,0.07); border-color:rgba(48,209,88,0.18); transform:translateX(4px); }
+    .pchk-ico { width:22px; height:22px; border-radius:50%; background:rgba(48,209,88,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .pchk-txt { font-size:13px; font-weight:500; color:#c0d4e8; }
+
+    /* ── CTA ── */
+    .cta-section { padding:120px 24px; text-align:center; position:relative; overflow:hidden; }
+    .cta-glow {
+      position:absolute; bottom:-40px; left:50%; transform:translateX(-50%);
+      width:700px; height:400px;
+      background:radial-gradient(ellipse at bottom, rgba(124,111,247,0.18) 0%, transparent 65%);
+      pointer-events:none;
+    }
+    .cta-h { font-size:clamp(34px,5.5vw,62px); font-weight:900; letter-spacing:-0.04em; line-height:1.03; margin-bottom:18px; }
+    .cta-sub { font-size:17px; color:var(--subtle); margin-bottom:40px; }
+
+    /* ── FOOTER ── */
+    footer { padding:32px 24px; text-align:center; border-top:1px solid var(--border); }
+    .foot-logo { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:10px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:960px) {
+      .nav-links { display:none; }
+      .feat-inner { grid-template-columns:1fr; gap:48px; }
+      .feat-inner.rev { direction:ltr; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .stat-cell:nth-child(2) { border-left:1px solid var(--border); }
+      .stat-cell:nth-child(3) { border-left:none; border-top:1px solid var(--border); }
+      .steps { grid-template-columns:1fr; }
+      .step { border-left:none; border-top:1px solid var(--border); }
+      .step:first-child { border-top:none; }
+      .cap-grid { grid-template-columns:1fr 1fr; }
+      .cap-cell:nth-child(2n) { border-right:none; }
+      .cap-cell:nth-child(3n) { border-right:1px solid var(--border); }
+      .privacy-inner { grid-template-columns:1fr; gap:48px; }
+      .app-layout { height:260px; }
+      .sidebar { width:150px; }
+      .acct-grid > div:last-child { display:none; }
+      .float-chip { display:none; }
+    }
+    @media (max-width:600px) {
+      .cap-grid { grid-template-columns:1fr; }
+      .cap-cell { border-right:none !important; }
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { transform:none; filter:none; transition:opacity 0.4s ease; }
+      .hero-mockup { transform:none !important; }
+      .float-chip > span, .blob { animation:none; }
+      .grad-shimmer { animation:none; }
+      .marquee-inner { animation-duration:90s; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SCROLL PROGRESS ── -->
+<div id="progress"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <img src="favicon.svg" width="24" height="24" alt="MultiWealth" />
+    <span class="nav-logo-txt">MultiWealth</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#intelligence">Intelligence</a></li>
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="docs.html">Docs</a></li>
+    <li><a href="#privacy">Privacy</a></li>
+  </ul>
+  <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-ghost">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    GitHub
+  </a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="hero">
+  <div class="aurora">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <canvas id="hero3d"></canvas>
+  <div class="hero-fade"></div>
+  <div class="noise"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge reveal">
+      <span class="pulse-dot"></span>
+      <span class="mono">Private · Self-hosted · Built for the UAE</span>
+    </div>
+
+    <h1 class="grad-shimmer reveal d1">Your wealth,<br/>beautifully<br/>organized.</h1>
+
+    <p class="reveal d2">One private dashboard for your bank accounts, investments, properties, vehicles and valuables — with live market data and bank-rate intelligence. Your data never leaves your machine.</p>
+
+    <div class="hero-ctas reveal d3">
+      <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-primary btn-lg">
+        Get started
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#features" class="btn btn-ghost btn-lg">See features</a>
+    </div>
+
+    <div class="hero-stage reveal d4">
+      <!-- floating depth chips -->
+      <div class="float-chip" data-depth="34" style="top:-26px; left:-90px">
+        <span style="animation-delay:.4s">🔔 <span>FAB Fixed Deposit</span> <span class="mono fc-green">4.10% → 4.35%</span></span>
+      </div>
+      <div class="float-chip" data-depth="22" style="top:34%; right:-120px">
+        <span style="animation-delay:1.3s"><span class="mono fc-green">ALDAR</span> <span class="fc-green">▲ +2.4%</span> <span class="mono" style="color:#5a708c">ADX</span></span>
+      </div>
+      <div class="float-chip" data-depth="28" style="bottom:18%; left:-110px">
+        <span style="animation-delay:2.1s">💸 <span>Rent received</span> <span class="mono fc-green">+AED 12,000</span></span>
+      </div>
+      <div class="float-chip" data-depth="18" style="bottom:-22px; right:-70px">
+        <span style="animation-delay:.9s">🎉 <span>Vacation pot</span> <span class="fc-gold">funded</span></span>
+      </div>
+
+      <div class="hero-mockup" id="heroMockup">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="wdot" style="background:#FF5F57"></div>
+            <div class="wdot" style="background:#FEBC2E"></div>
+            <div class="wdot" style="background:#28C840"></div>
+            <div class="url-pill">multiwealth · self-hosted</div>
+          </div>
+          <div class="app-layout">
+            <div class="sidebar">
+              <div class="sidebar-logo">
+                <div class="logo-mark"></div>
+                <span class="logo-txt">MultiWealth</span>
+              </div>
+              <div class="sb on"><div class="sb-dot" style="background:#7C6FF7"></div>Overview</div>
+              <div class="sb"><div class="sb-dot" style="background:#0A84FF"></div>Accounts</div>
+              <div class="sb"><div class="sb-dot" style="background:#FBBF24"></div>Transactions</div>
+              <div class="sb"><div class="sb-dot" style="background:#30D158"></div>Investments</div>
+              <div class="sb"><div class="sb-dot" style="background:#FF9F0A"></div>Properties</div>
+              <div class="sb"><div class="sb-dot" style="background:#BF5AF2"></div>Tangibles</div>
+              <div class="sb"><div class="sb-dot" style="background:#64D2FF"></div>Pots</div>
+              <div class="sb"><div class="sb-dot" style="background:#FF453A"></div>Cheques</div>
+            </div>
+            <div class="main-pane">
+              <div class="nw-card">
+                <div class="nw-row">
+                  <div>
+                    <div class="nw-lbl">Total Net Worth</div>
+                    <div class="nw-val mono" data-count="3842500" data-prefix="AED ">AED 0</div>
+                    <div class="nw-chg">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+                      +8.4% this year
+                    </div>
+                  </div>
+                  <div class="tabs">
+                    <div class="tab on">1M</div><div class="tab">3M</div><div class="tab">1Y</div>
+                  </div>
+                </div>
+                <svg style="width:100%;height:56px" viewBox="0 0 500 56" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="cg1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#7C6FF7" stop-opacity="0.22"/>
+                      <stop offset="100%" stop-color="#7C6FF7" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#cg1)" d="M0,50 C40,44 80,36 120,34 C160,32 200,38 240,28 C280,18 320,24 360,14 C400,4 450,8 500,2 L500,56 L0,56 Z"/>
+                  <path class="chart-path" d="M0,50 C40,44 80,36 120,34 C160,32 200,38 240,28 C280,18 320,24 360,14 C400,4 450,8 500,2"/>
+                </svg>
+              </div>
+              <div class="acct-grid">
+                <div class="acct-card">
+                  <div class="acct-bank"><div class="acct-dot" style="background:#E60026"></div>RAKBank</div>
+                  <div class="acct-bal">AED 84,230</div>
+                  <div class="prog"><div class="prog-f" style="width:65%;background:#7C6FF7"></div></div>
+                </div>
+                <div class="acct-card">
+                  <div class="acct-bank"><div class="acct-dot" style="background:#009B77"></div>FAB</div>
+                  <div class="acct-bal">AED 142,800</div>
+                  <div class="prog"><div class="prog-f" style="width:80%;background:#30D158"></div></div>
+                </div>
+                <div class="acct-card">
+                  <div class="acct-bank"><div class="acct-dot" style="background:#ED1C24"></div>ADCB</div>
+                  <div class="acct-bal">AED 56,400</div>
+                  <div class="prog"><div class="prog-f" style="width:42%;background:#FBBF24"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-reflection"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section class="stats-wrap">
+  <div class="stats-grid">
+    <div class="stat-cell reveal">
+      <div class="stat-v grad-brand mono" data-count="28">0</div>
+      <div class="stat-l">UAE banks in the catalog</div>
+    </div>
+    <div class="stat-cell reveal d1">
+      <div class="stat-v mono" style="color:#30D158" data-count="700" data-suffix="+">0</div>
+      <div class="stat-l">bank products rate-monitored</div>
+    </div>
+    <div class="stat-cell reveal d2">
+      <div class="stat-v mono" style="font-size:18px;color:#7C6FF7">AED + USD</div>
+      <div class="stat-l">dual currency support</div>
+    </div>
+    <div class="stat-cell reveal d3">
+      <div class="stat-v">∞</div>
+      <div class="stat-l">no subscription · ever</div>
+    </div>
+    <div class="stat-cell reveal d4">
+      <div class="stat-v mono" style="color:#30D158" data-count="100" data-suffix="%">0</div>
+      <div class="stat-l">private &amp; local</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURE 1: NET WORTH ── -->
+<section class="feat dark feat-spot-purple" id="features">
+  <div class="feat-inner">
+    <div class="reveal">
+      <div class="feat-overline">Net Worth</div>
+      <h2 class="feat-h2 grad-text">Know your complete financial picture</h2>
+      <p class="feat-body">Every account, holding, property, vehicle and valuable consolidated into one live net worth view — including off-plan payment plans, co-ownership shares, and what's actually yours.</p>
+      <div class="bullets">
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Live net worth across every asset class</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Assets, liabilities and net — charted together</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>"My share" lens for co-owned assets</div>
+      </div>
+    </div>
+    <div class="reveal d2 mc-stage">
+      <div class="mc" data-tilt style="animation:float 5s ease-in-out infinite">
+        <div class="mono" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:12px">Net Worth — June 2026</div>
+        <div style="font-size:32px;font-weight:900;letter-spacing:-0.035em;color:var(--text);margin-bottom:4px">AED 3,842,500</div>
+        <div style="font-size:12px;color:#30D158;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:4px">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+          +AED 297,400 · +8.4% this year
+        </div>
+        <svg style="width:100%;height:72px;display:block" viewBox="0 0 400 72" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7C6FF7" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#7C6FF7" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#cg2)" d="M0,66 C50,58 100,48 150,42 C200,36 250,46 300,30 C350,14 380,10 400,4 L400,72 L0,72 Z"/>
+          <path fill="none" stroke="#7C6FF7" stroke-width="2.5" stroke-dasharray="1000" stroke-dashoffset="1000" style="animation:line-draw 2s ease forwards 0.3s" d="M0,66 C50,58 100,48 150,42 C200,36 250,46 300,30 C350,14 380,10 400,4"/>
+          <circle cx="400" cy="4" r="4" fill="#7C6FF7"/>
+        </svg>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px">
+          <div style="background:rgba(124,111,247,0.08);border-radius:10px;padding:10px">
+            <div class="mono" style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Banking</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">AED 283k</div>
+          </div>
+          <div style="background:rgba(48,209,88,0.08);border-radius:10px;padding:10px">
+            <div class="mono" style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Property</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">AED 2.8M</div>
+          </div>
+          <div style="background:rgba(10,132,255,0.08);border-radius:10px;padding:10px">
+            <div class="mono" style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Invest</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">AED 756k</div>
+          </div>
+          <div style="background:rgba(251,191,36,0.08);border-radius:10px;padding:10px">
+            <div class="mono" style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Tangible</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">AED 92k</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURE 2: TRANSACTIONS ── -->
+<section class="feat feat-spot-blue">
+  <div class="feat-inner rev">
+    <div class="reveal">
+      <div class="feat-overline">Transactions</div>
+      <h2 class="feat-h2 grad-text">Every dirham, accounted for</h2>
+      <p class="feat-body">Import PDF or CSV bank statements and get a clean, categorized history in seconds. Payees normalize themselves, recurring payments are detected automatically, and duplicates never land twice.</p>
+      <div class="bullets">
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>PDF and CSV statement import per bank</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Payee rules + automatic recurring detection</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Smart duplicate detection and review queue</div>
+      </div>
+    </div>
+    <div class="reveal d2 mc-stage">
+      <div class="mc mc-blue" data-tilt style="animation:float2 6s ease-in-out infinite 1s">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Transactions</div>
+          <div class="mono" style="font-size:10px;color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:4px 10px">June 2026</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(48,209,88,0.12)">💰</div>
+          <div><div class="tx-name">Salary — Employer LLC</div><div class="tx-meta">Income · FAB · Jun 11</div></div>
+          <div class="tx-amt" style="color:#30D158">+AED 28,500</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(124,111,247,0.12)">🏠</div>
+          <div><div class="tx-name">Rental Income — Marina</div><div class="tx-meta">Property · ENBD · Jun 9</div></div>
+          <div class="tx-amt" style="color:#30D158">+AED 12,000</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(255,68,58,0.12)">🛒</div>
+          <div><div class="tx-name">Carrefour Hypermarket</div><div class="tx-meta">Groceries · RAKBank · Jun 12</div></div>
+          <div class="tx-amt" style="color:#FF453A">-AED 342</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(10,132,255,0.12)">🔁</div>
+          <div><div class="tx-name">DEWA — detected recurring</div><div class="tx-meta">Utilities · ADCB · monthly</div></div>
+          <div class="tx-amt" style="color:#FF453A">-AED 485</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(255,214,10,0.12)">🍽️</div>
+          <div><div class="tx-name">Zuma Restaurant</div><div class="tx-meta">Dining · Mashreq · Jun 8</div></div>
+          <div class="tx-amt" style="color:#FF453A">-AED 890</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURE 3: INVESTMENTS ── -->
+<section class="feat dark feat-spot-gold">
+  <div class="feat-inner">
+    <div class="reveal">
+      <div class="feat-overline">Investments</div>
+      <h2 class="feat-h2 grad-text">Track every holding, across every broker</h2>
+      <p class="feat-body">Consolidate your portfolio across brokers and exchanges — including a live watchlist with ADX and DFM quotes, the markets most trackers ignore. Performance, history, and value, all in AED.</p>
+      <div class="bullets">
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Multi-broker portfolio consolidation</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Live watchlist — ADX, DFM, US markets, crypto</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Stocks, ETFs, crypto and cash positions</div>
+      </div>
+    </div>
+    <div class="reveal d2 mc-stage">
+      <div class="mc mc-gold" data-tilt style="animation:float 7s ease-in-out infinite 2s">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Portfolio</div>
+          <div style="font-size:11px;color:#30D158;font-weight:600;display:flex;align-items:center;gap:3px">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+12.4% YTD
+          </div>
+        </div>
+        <div style="font-size:24px;font-weight:900;letter-spacing:-0.025em;color:var(--text);margin-bottom:16px">AED 756,200</div>
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:16px;padding:14px;background:rgba(251,191,36,0.05);border-radius:12px;border:1px solid rgba(251,191,36,0.12)">
+          <svg viewBox="0 0 80 80" width="58" height="58">
+            <circle cx="40" cy="40" r="28" fill="none" stroke="#2A2A30" stroke-width="12"/>
+            <circle cx="40" cy="40" r="28" fill="none" stroke="#7C6FF7" stroke-width="12" stroke-dasharray="70 106" stroke-dashoffset="-5"/>
+            <circle cx="40" cy="40" r="28" fill="none" stroke="#30D158" stroke-width="12" stroke-dasharray="42 134" stroke-dashoffset="-75"/>
+            <circle cx="40" cy="40" r="28" fill="none" stroke="#FBBF24" stroke-width="12" stroke-dasharray="24 152" stroke-dashoffset="-117"/>
+            <circle cx="40" cy="40" r="28" fill="none" stroke="#0A84FF" stroke-width="12" stroke-dasharray="20 156" stroke-dashoffset="-141"/>
+          </svg>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#99b0d1"><div style="width:8px;height:8px;border-radius:2px;background:#7C6FF7"></div>Equity 40%</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#99b0d1"><div style="width:8px;height:8px;border-radius:2px;background:#30D158"></div>ETF 24%</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#99b0d1"><div style="width:8px;height:8px;border-radius:2px;background:#FBBF24"></div>Crypto 14%</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#99b0d1"><div style="width:8px;height:8px;border-radius:2px;background:#0A84FF"></div>Cash 11%</div>
+          </div>
+        </div>
+        <div class="holding">
+          <div class="h-tick" style="background:rgba(48,209,88,0.12);color:#30D158">ALDAR</div>
+          <div style="flex:1"><div class="h-sym">Aldar Properties</div><div class="h-shares">4,200 shares · ADX</div></div>
+          <div><div class="h-val">AED 38,900</div><div class="h-chg" style="color:#30D158">+2.4%</div></div>
+        </div>
+        <div class="holding">
+          <div class="h-tick" style="background:rgba(0,120,255,0.15);color:#4DA6FF">AAPL</div>
+          <div style="flex:1"><div class="h-sym">Apple Inc.</div><div class="h-shares">12 shares · Saxo Bank</div></div>
+          <div><div class="h-val">AED 82,400</div><div class="h-chg" style="color:#30D158">+1.1%</div></div>
+        </div>
+        <div class="holding">
+          <div class="h-tick" style="background:rgba(255,214,10,0.12);color:#FBBF24">BTC</div>
+          <div style="flex:1"><div class="h-sym">Bitcoin</div><div class="h-shares">0.48 BTC · Binance</div></div>
+          <div><div class="h-val">AED 63,800</div><div class="h-chg" style="color:#FF453A">-1.2%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURE 4: BANK INTELLIGENCE ── -->
+<section class="feat feat-spot-green" id="intelligence">
+  <div class="feat-inner rev">
+    <div class="reveal">
+      <div class="feat-overline">Bank Intelligence</div>
+      <h2 class="feat-h2 grad-text">The UAE banking market, watched for you</h2>
+      <p class="feat-body">A built-in catalog of 700+ products across 28 UAE banks — credit cards, deposits, savings, loans — re-scraped on a schedule. When a rate moves or a perk changes, you get a readable alert with the exact before and after.</p>
+      <div class="bullets">
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Rate-change alerts with exact before/after</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Compare cards, deposits and loans side-by-side</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Link your real accounts to their catalog product</div>
+      </div>
+    </div>
+    <div class="reveal d2 mc-stage">
+      <div class="mc mc-green" data-tilt style="animation:float2 6s ease-in-out infinite .5s">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Rate Alerts</div>
+          <div class="mono" style="font-size:10px;color:#30D158;background:rgba(48,209,88,0.08);border:1px solid rgba(48,209,88,0.18);border-radius:6px;padding:4px 10px">28 banks watched</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(48,209,88,0.12)">📈</div>
+          <div><div class="tx-name">FAB — Fixed Deposit 12M</div><div class="tx-meta">Rate change · 2 days ago</div></div>
+          <div class="tx-amt mono" style="color:#30D158;font-size:11px">4.10% → 4.35%</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(255,69,58,0.12)">📉</div>
+          <div><div class="tx-name">Emirates NBD — Liv Savings</div><div class="tx-meta">Rate change · 4 days ago</div></div>
+          <div class="tx-amt mono" style="color:#FF453A;font-size:11px">3.75% → 3.50%</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(124,111,247,0.12)">💳</div>
+          <div><div class="tx-name">ADCB — Touchpoints Platinum</div><div class="tx-meta">Rewards updated · 1 week ago</div></div>
+          <div class="tx-amt mono" style="color:#a89df7;font-size:11px">fee waived</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(251,191,36,0.12)">✨</div>
+          <div><div class="tx-name">Wio — Personal Loan</div><div class="tx-meta">New product · added to catalog</div></div>
+          <div class="tx-amt mono" style="color:#FBBF24;font-size:11px">from 5.99%</div>
+        </div>
+        <div class="tx">
+          <div class="tx-ico" style="background:rgba(10,132,255,0.12)">🔗</div>
+          <div><div class="tx-name">Your Citi card → catalog</div><div class="tx-meta">Linked · perks &amp; rates tracked</div></div>
+          <div class="tx-amt mono" style="color:#4DA6FF;font-size:11px">linked ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURE 5: POTS & GOALS ── -->
+<section class="feat dark feat-spot-purple">
+  <div class="feat-inner">
+    <div class="reveal">
+      <div class="feat-overline">Pots &amp; Goals</div>
+      <h2 class="feat-h2 grad-text">Evidence-based budgeting, not vibes</h2>
+      <p class="feat-body">Envelopes for money you're setting aside, trackers for balances that mirror reality, and sinking funds that compute their own monthly set-aside from real contractual dates — like an off-plan payment plan.</p>
+      <div class="bullets">
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Envelope, tracker and view pot types</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Sinking funds linked to payment plans</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Monthly planner with double-count protection</div>
+      </div>
+    </div>
+    <div class="reveal d2 mc-stage">
+      <div class="mc" data-tilt style="animation:float 6s ease-in-out infinite 1.5s">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Pots</div>
+          <div class="mono" style="font-size:10px;color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:4px 10px">4 active</div>
+        </div>
+        <div class="pot">
+          <div class="pot-top">
+            <div class="pot-name">🏖️ Vacation <span class="pot-pill">Funded 🎉</span></div>
+            <div class="pot-amt">25,000 / 25,000</div>
+          </div>
+          <div class="prog"><div class="prog-f" style="width:100%;background:#30D158"></div></div>
+        </div>
+        <div class="pot">
+          <div class="pot-top">
+            <div class="pot-name">🏗️ Off-plan milestone</div>
+            <div class="pot-amt">168,000 / 280,000</div>
+          </div>
+          <div class="prog"><div class="prog-f" style="width:60%;background:#7C6FF7"></div></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Set aside <span style="color:#a89df7;font-weight:600">AED 8,400/mo</span> to hit the next milestone date</div>
+        </div>
+        <div class="pot">
+          <div class="pot-top">
+            <div class="pot-name">🚨 Emergency fund</div>
+            <div class="pot-amt">54,000 / 90,000</div>
+          </div>
+          <div class="prog"><div class="prog-f" style="width:60%;background:#FBBF24"></div></div>
+        </div>
+        <div class="pot">
+          <div class="pot-top">
+            <div class="pot-name">🚗 Car upgrade</div>
+            <div class="pot-amt">18,500 / 120,000</div>
+          </div>
+          <div class="prog"><div class="prog-f" style="width:15%;background:#0A84FF"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CAPABILITIES GRID ── -->
+<section class="cap-section">
+  <div class="sec-hdr reveal">
+    <p class="sec-overline">Everything included</p>
+    <h2 class="sec-h2 grad-text">The complete wealth stack</h2>
+  </div>
+  <div class="cap-grid">
+    <div class="cap-cell reveal">
+      <div class="cap-icon" style="background:rgba(124,111,247,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C6FF7" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      </div>
+      <div class="cap-title">Bank Accounts</div>
+      <p class="cap-body">Current, savings, fixed deposits, credit cards and loans — with real credit-card semantics, utilization, and the new UAE dirham symbol everywhere.</p>
+    </div>
+    <div class="cap-cell reveal d1">
+      <div class="cap-icon" style="background:rgba(48,209,88,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      </div>
+      <div class="cap-title">Investments &amp; Watchlist</div>
+      <p class="cap-body">Multi-broker portfolio plus a live watchlist with ADX, DFM, US and crypto quotes — card, fit and list views with drag-to-reorder.</p>
+    </div>
+    <div class="cap-cell reveal d2">
+      <div class="cap-icon" style="background:rgba(10,132,255,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="cap-title">Real Estate</div>
+      <p class="cap-body">Leases, tenants, rent schedules, mortgages and expenses — plus full off-plan support with payment-plan milestones and co-ownership shares.</p>
+    </div>
+    <div class="cap-cell reveal d1">
+      <div class="cap-icon" style="background:rgba(191,90,242,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#BF5AF2" stroke-width="1.8"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20"/><path d="M12 21L8 9l2-6"/><path d="M12 21l4-12-2-6"/></svg>
+      </div>
+      <div class="cap-title">Vehicles &amp; Valuables</div>
+      <p class="cap-body">Cars, boats, watches, jewellery — tracked with purchase price, current value, documents (Mulkiya, insurance) and value-vs-purchase at a glance.</p>
+    </div>
+    <div class="cap-cell reveal d2">
+      <div class="cap-icon" style="background:rgba(251,191,36,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      </div>
+      <div class="cap-title">Transactions</div>
+      <p class="cap-body">Statement import with duplicate detection, payee normalization rules, automatic recurring-payment detection, and a clean review queue.</p>
+    </div>
+    <div class="cap-cell reveal d3">
+      <div class="cap-icon" style="background:rgba(100,210,255,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64D2FF" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div class="cap-title">Pots, Goals &amp; Budget</div>
+      <p class="cap-body">Envelope budgeting with sinking funds, computed monthly set-asides from real due dates, and a planner that refuses to double-count.</p>
+    </div>
+    <div class="cap-cell reveal d2">
+      <div class="cap-icon" style="background:rgba(255,69,58,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF453A" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h7M6 14h4"/><polyline points="14 14 16 16 20 12"/></svg>
+      </div>
+      <div class="cap-title">Cheques</div>
+      <p class="cap-body">First-class UAE cheque tracking — issued, deposited, cleared, bounced — with a real status lifecycle linked to your accounts and goals.</p>
+    </div>
+    <div class="cap-cell reveal d3">
+      <div class="cap-icon" style="background:rgba(48,209,88,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      </div>
+      <div class="cap-title">Product Catalog &amp; Alerts</div>
+      <p class="cap-body">700+ products across 28 UAE banks, re-scraped on a schedule. Rate changes and perk updates become readable alerts with exact diffs.</p>
+    </div>
+    <div class="cap-cell reveal d4">
+      <div class="cap-icon" style="background:rgba(124,111,247,0.12)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C6FF7" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="cap-title">100% Private</div>
+      <p class="cap-body">Your data never leaves your machine. Self-hosted with no cloud, no subscriptions, no tracking, no ads — ever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-section" id="how-it-works">
+  <div class="how-inner">
+    <div class="sec-hdr reveal">
+      <p class="sec-overline">How it works</p>
+      <h2 class="sec-h2 grad-text">Up and running in minutes</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-n">01</div>
+        <div class="step-t">Add what you own</div>
+        <p class="step-b">Bank accounts, brokers, properties, vehicles, valuables. MultiWealth auto-detects the bank brand, account type, and currency.</p>
+      </div>
+      <div class="step reveal d2">
+        <div class="step-n">02</div>
+        <div class="step-t">Import your statements</div>
+        <p class="step-b">Drop PDF or CSV statements — transactions are parsed, payees normalized, recurring payments detected, duplicates removed.</p>
+      </div>
+      <div class="step reveal d4">
+        <div class="step-n">03</div>
+        <div class="step-t">See your full picture</div>
+        <p class="step-b">Net worth, portfolio, property equity, pots and spending in one dashboard — with live quotes and bank-rate alerts on top.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BANKS MARQUEE ── -->
+<section class="marquee-section">
+  <p class="marquee-label">28 UAE banks in the product catalog</p>
+  <div class="marquee-track">
+    <div class="marquee-inner" id="marquee">
+      <span class="bank-chip">RAKBANK</span>
+      <span class="bank-chip">First Abu Dhabi Bank</span>
+      <span class="bank-chip">ADCB</span>
+      <span class="bank-chip">Emirates NBD</span>
+      <span class="bank-chip">Mashreq</span>
+      <span class="bank-chip">Citi UAE</span>
+      <span class="bank-chip">HSBC</span>
+      <span class="bank-chip">Dubai Islamic Bank</span>
+      <span class="bank-chip">ADIB</span>
+      <span class="bank-chip">Commercial Bank of Dubai</span>
+      <span class="bank-chip">Standard Chartered</span>
+      <span class="bank-chip">Emirates Islamic</span>
+      <span class="bank-chip">Wio Bank</span>
+      <span class="bank-chip">Al Hilal Bank</span>
+      <span class="bank-chip">Sharjah Islamic Bank</span>
+      <span class="bank-chip">National Bank of Fujairah</span>
+      <span class="bank-chip">Zand</span>
+      <span class="bank-chip">Liv</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRIVACY ── -->
+<section class="privacy-section" id="privacy">
+  <div class="privacy-inner">
+    <div class="reveal">
+      <div class="feat-overline">Privacy First</div>
+      <h2 class="feat-h2 grad-text">Your data never leaves your machine</h2>
+      <p class="feat-body">MultiWealth runs entirely on your own computer or server. No accounts to create, no data uploaded anywhere, no analytics, no ads. Your net worth is nobody's business but yours.</p>
+      <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-primary" style="margin-top:8px">
+        Self-host for free
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+    </div>
+    <div class="pchk-list reveal d2">
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No cloud storage — everything stays local</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No account required to run it</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No subscription fees — forever free</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No analytics, tracking, or ads of any kind</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">Runs on your own hardware — laptop, Mac mini, or home server</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ── -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div style="position:relative;z-index:1">
+    <h2 class="cta-h grad-text reveal">Take control of<br/>your wealth today.</h2>
+    <p class="cta-sub reveal d1">Self-host in minutes. Your data, your rules.</p>
+    <div class="reveal d2">
+      <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-primary btn-lg">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="foot-logo">
+    <img src="favicon.svg" width="18" height="18" alt="MultiWealth" style="opacity:0.4" />
+    <span style="font-size:13px;font-weight:600;color:rgba(120,120,140,0.5)">MultiWealth</span>
+  </div>
+  <p style="font-size:11px;color:rgba(120,120,140,0.35)" class="mono">Private wealth management · Self-hosted · All rights reserved</p>
+</footer>
+
+<script>
+  const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll progress bar + nav
+  const progress = document.getElementById('progress');
+  const nav = document.getElementById('nav');
+
+  // Hero mockup: tilted in 3D, straightens as you scroll
+  const heroMockup = document.getElementById('heroMockup');
+  let mouseRX = 0, mouseRY = 0;
+
+  function heroTransform() {
+    if (RM || !heroMockup) return;
+    const t = Math.min(window.scrollY / 480, 1);
+    const rx = 16 * (1 - t) + mouseRX * (1 - t);
+    const ry = mouseRY * (1 - t);
+    const s = 0.97 + 0.03 * t;
+    heroMockup.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(${s})`;
+  }
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.transform = `scaleX(${window.scrollY / max})`;
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => { heroTransform(); ticking = false; });
+    }
+  }, { passive: true });
+
+  // Mouse parallax in the hero: mockup micro-tilt + floating chips at depth
+  const hero = document.getElementById('hero');
+  const chips = document.querySelectorAll('.float-chip');
+  if (!RM) {
+    hero.addEventListener('pointermove', e => {
+      const r = hero.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;   // -0.5 .. 0.5
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      mouseRY = nx * 5;
+      mouseRX = -ny * 3;
+      requestAnimationFrame(() => {
+        heroTransform();
+        chips.forEach(c => {
+          const d = parseFloat(c.dataset.depth || '20');
+          c.style.transform = `translate3d(${nx * d}px, ${ny * d}px, 0)`;
+        });
+      });
+    }, { passive: true });
+    hero.addEventListener('pointerleave', () => {
+      mouseRX = 0; mouseRY = 0;
+      heroTransform();
+      chips.forEach(c => { c.style.transform = ''; });
+    });
+  }
+
+  // Mouse-tracking 3D tilt + glare on feature cards
+  if (!RM) {
+    document.querySelectorAll('[data-tilt]').forEach(el => {
+      const glare = document.createElement('div');
+      glare.className = 'glare';
+      el.appendChild(glare);
+      const MAX = 9;
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        const nx = (e.clientX - r.left) / r.width - 0.5;
+        const ny = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transition = 'transform 0.08s ease-out';
+        el.style.transform = `perspective(900px) rotateX(${-ny * MAX}deg) rotateY(${nx * MAX}deg)`;
+        el.style.setProperty('--gx', `${(nx + 0.5) * 100}%`);
+        el.style.setProperty('--gy', `${(ny + 0.5) * 100}%`);
+      });
+      el.addEventListener('pointerleave', () => {
+        el.style.transition = 'transform 0.6s cubic-bezier(0.22,1,0.36,1)';
+        el.style.transform = 'perspective(900px) rotateX(0) rotateY(0)';
+      });
+    });
+  }
+
+  // Count-up numbers
+  function countUp(el) {
+    const target = parseInt(el.dataset.count, 10);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const dur = 1400;
+    const t0 = performance.now();
+    function frame(t) {
+      const p = Math.min((t - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + Math.round(target * eased).toLocaleString('en-US') + suffix;
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // Reveal on scroll (+ trigger count-ups inside)
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        e.target.querySelectorAll('[data-count]').forEach(c => {
+          if (!c.dataset.counted) { c.dataset.counted = '1'; countUp(c); }
+        });
+        if (e.target.dataset.count && !e.target.dataset.counted) {
+          e.target.dataset.counted = '1'; countUp(e.target);
+        }
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Animate hero immediately
+  setTimeout(() => {
+    document.querySelectorAll('.hero .reveal').forEach(el => {
+      el.classList.add('in');
+      el.querySelectorAll('[data-count]').forEach(c => {
+        if (!c.dataset.counted) { c.dataset.counted = '1'; countUp(c); }
+      });
+    });
+  }, 60);
+
+  // Duplicate marquee content for a seamless loop
+  const mq = document.getElementById('marquee');
+  if (mq) mq.parentElement.appendChild(mq.cloneNode(true));
+</script>
+
+<!-- ── WEBGL PARTICLE FIELD (graceful fallback to the aurora if it can't load) ── -->
+<script type="module">
+  const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('hero3d');
+  if (canvas && window.innerWidth > 700) {
+    try {
+      const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+
+      const hero = document.getElementById('hero');
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+      camera.position.set(0, 2.6, 6.2);
+      camera.lookAt(0, 0.2, 0);
+
+      // Particle "wealth surface": a grid of points undulating like a market chart
+      const COLS = 130, ROWS = 64, SX = 26, SZ = 14;
+      const N = COLS * ROWS;
+      const pos = new Float32Array(N * 3);
+      const col = new Float32Array(N * 3);
+      let k = 0;
+      for (let j = 0; j < ROWS; j++) {
+        for (let i = 0; i < COLS; i++) {
+          pos[k * 3]     = (i / (COLS - 1) - 0.5) * SX;
+          pos[k * 3 + 1] = 0;
+          pos[k * 3 + 2] = (j / (ROWS - 1) - 0.5) * SZ - 1.5;
+          k++;
+        }
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      const mat = new THREE.PointsMaterial({
+        size: 0.05, vertexColors: true, transparent: true, opacity: 0.9,
+        depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+      });
+      scene.add(new THREE.Points(geo, mat));
+
+      // Height → colour ramp: deep navy → brand purple → gold crest
+      const ramp = [];
+      const cLow = new THREE.Color('#13204a'), cMid = new THREE.Color('#7C6FF7'), cHigh = new THREE.Color('#FBBF24');
+      for (let s = 0; s < 64; s++) {
+        const p = s / 63;
+        ramp.push(p < 0.62
+          ? cLow.clone().lerp(cMid, p / 0.62)
+          : cMid.clone().lerp(cHigh, (p - 0.62) / 0.38));
+      }
+
+      let mx = 0, my = 0;
+      hero.addEventListener('pointermove', e => {
+        const r = hero.getBoundingClientRect();
+        mx = (e.clientX - r.left) / r.width - 0.5;
+        my = (e.clientY - r.top) / r.height - 0.5;
+      }, { passive: true });
+
+      function resize() {
+        const w = hero.clientWidth, h = hero.clientHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
+
+      const AMP = 0.55;
+      function wave(x, z, t) {
+        return AMP * (
+          Math.sin(x * 0.55 + t * 0.9) * Math.cos(z * 0.45 + t * 0.6) * 0.6 +
+          Math.sin((x + z) * 0.9 + t * 1.3) * 0.28 +
+          Math.sin(x * 1.7 - t * 0.7) * Math.cos(z * 1.3 + t) * 0.16
+        );
+      }
+
+      let visible = true;
+      document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
+
+      const p = geo.attributes.position.array;
+      const c = geo.attributes.color.array;
+      function render(tms) {
+        const t = tms * 0.001;
+        for (let n = 0; n < N; n++) {
+          const x = p[n * 3], z = p[n * 3 + 2];
+          const y = wave(x, z, t);
+          p[n * 3 + 1] = y;
+          const ci = Math.max(0, Math.min(63, Math.round(((y / AMP) * 0.5 + 0.5) * 63)));
+          const rc = ramp[ci];
+          c[n * 3] = rc.r; c[n * 3 + 1] = rc.g; c[n * 3 + 2] = rc.b;
+        }
+        geo.attributes.position.needsUpdate = true;
+        geo.attributes.color.needsUpdate = true;
+        camera.position.x += (mx * 1.4 - camera.position.x) * 0.04;
+        camera.position.y += (2.6 - my * 0.8 - camera.position.y) * 0.04;
+        camera.lookAt(0, 0.2, 0);
+        renderer.render(scene, camera);
+      }
+
+      if (RM) {
+        render(0); // static frame, no animation
+      } else {
+        renderer.setAnimationLoop(t => { if (visible) render(t); });
+      }
+      canvas.classList.add('live');
+    } catch (err) {
+      // CDN unreachable or WebGL unavailable — the aurora blobs carry the hero
+      console.info('hero3d skipped:', err && err.message);
+    }
+  }
+</script>
+</body>
+</html>
