@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MultiWealth — Your wealth, beautifully organized.</title>
-  <meta name="description" content="A private, self-hosted wealth dashboard for UAE finances. Bank accounts, investments, properties, vehicles, valuables, pots and cheques — plus a 28-bank product catalog with rate-change alerts. Your data never leaves your machine." />
+  <meta name="description" content="A self-hosted wealth dashboard for UAE finances. Accounts, statement review, AECB credit reports, investments, real estate and Pots — with bank product comparisons, offers and change history." />
+  <meta property="og:title" content="MultiWealth — Your wealth, beautifully organized." />
+  <meta property="og:description" content="One place for your finances, credit and real estate. Explore the current MultiWealth project." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#000610" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -564,9 +568,55 @@
       .grad-shimmer { animation:none; }
       .marquee-inner { animation-duration:90s; }
     }
+
+    /* Current project content, shared with the existing visual language. */
+    :root { --muted: #9aa9bd; --subtle: #91a7c3; }
+    section[id] { scroll-margin-top: 76px; }
+    a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid #64D2FF; outline-offset: 5px; }
+    .skip-link { position:fixed;top:8px;left:12px;transform:translateY(-180%);z-index:300;background:#fff;color:#000610;padding:12px;border-radius:8px; }
+    .skip-link:focus { transform:none; }
+    .hero-content .snapshot-note { font-size:11px;line-height:1.7;max-width:620px;margin:18px auto 0;color:var(--muted); }
+    .hero-content .preview-note, .preview-note { font-size:11px;line-height:1.7;color:var(--muted);margin:16px 0 0; }
+    .current-section { max-width:1180px;margin:auto;padding:84px 32px; }
+    .section-lead { max-width:620px;margin:20px auto 0;color:var(--muted);line-height:1.8;font-size:15px; }
+    .current-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px; }
+    .current-card { display:flex;flex-direction:column;gap:18px;padding:30px;background:var(--card);border:1px solid var(--border);border-radius:16px;text-decoration:none;color:var(--text);transition:border-color .2s; }
+    .current-card:hover { border-color:#7C6FF7; }
+    .feature-number { color:#a89df7;font-size:10px;letter-spacing:.08em; }
+    .current-card h3 { font-size:21px;line-height:1.4;letter-spacing:-.5px; }
+    .current-card p { font-size:13px;line-height:1.85;color:var(--muted); }
+    .text-link { display:inline-block;font-size:12px;font-weight:600;color:#b5b0ff;text-decoration:none;margin-top:22px; }
+    .current-card .text-link { margin-top:auto;padding-top:8px; }
+    .sb-group { color:#30D158;font-weight:700;font-size:10px;padding:12px 10px 5px; }
+    .sb-group.estate { color:#64D2FF; }
+    .sb-detail { display:block;font-size:8px;color:var(--muted);margin-top:4px; }
+    .sidebar .sb { display:block;height:auto;min-height:22px;font-size:9px;padding:5px 10px;color:var(--muted); }
+    .sidebar .sb.on { display:flex; }
+    .sidebar { width:195px; }
+    .url-pill { width:auto;min-height:18px;height:auto;padding:3px 10px;color:var(--muted); }
+    .preview-heading { display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;margin-bottom:24px; }
+    .sample-pill { display:inline-block;font:9px 'JetBrains Mono',monospace;color:var(--muted);border:1px solid var(--border);padding:5px 7px;border-radius:5px;vertical-align:middle; }
+    .credit-score { font-size:52px;letter-spacing:-3px;color:#64D2FF; }
+    .credit-score small { font-size:18px;color:var(--muted);letter-spacing:0; }
+    .credit-context { font-size:11px;color:var(--muted);margin:8px 0 30px;line-height:1.8; }
+    .credit-context span { display:block;color:#30D158; }
+    .credit-preview svg { width:100%;display:block; }
+    .credit-details { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border); }
+    .credit-details span { display:block;font-size:10px;color:var(--muted);margin-bottom:8px; }
+    .credit-details strong { font-size:11px;font-weight:500; }
+    .estate-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+    .estate-grid>div { border:1px solid var(--border);border-radius:10px;padding:18px;background:rgba(10,132,255,.035); }
+    .estate-grid span { display:block;color:#64D2FF;font:10px 'JetBrains Mono',monospace;margin-bottom:14px; }
+    .estate-grid strong { font-size:13px; }
+    .estate-grid p { font-size:10px;color:var(--muted);margin-top:6px; }
+    @media(max-width:960px) { .current-grid { grid-template-columns:1fr; } .app-layout { height:380px; } .sidebar { width:170px; } }
+    @media(max-width:600px) { nav { padding:0 16px; } .current-section { padding:64px 24px; } .hero-content h1 { font-size:clamp(44px,12vw,64px); } .hero-ctas { flex-wrap:wrap;justify-content:center; } .sidebar { display:none; } .main-pane { padding:16px; } .app-layout { height:auto;min-height:280px; } .credit-score { font-size:44px; } .stats-grid { grid-template-columns:1fr 1fr; } .stat-cell:last-child { grid-column:1/-1; } .mc { min-width:0; } .tx-amt { white-space:normal; } }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation:none!important;transition:none!important; } .reveal { opacity:1;transform:none;filter:none; } .chart-path { stroke-dashoffset:0; } }
   </style>
+  <noscript><style>.reveal { opacity:1;transform:none;filter:none; }</style></noscript>
 </head>
 <body>
+<a class="skip-link" href="#hero">Skip to content</a>
 
 <!-- ── SCROLL PROGRESS ── -->
 <div id="progress"></div>
@@ -589,7 +639,7 @@
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
       Docs
     </a>
-    <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-ghost">
+    <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       GitHub
     </a>
@@ -615,17 +665,18 @@
 
     <h1 class="grad-shimmer display reveal d1">Your wealth,<br/>beautifully<br/>organized.</h1>
 
-    <p class="reveal d2">One private dashboard for your bank accounts, investments, properties, vehicles and valuables — with live market data and bank-rate intelligence. Your data never leaves your machine.</p>
+    <p class="reveal d2">From everyday banking to your next property milestone. Bring accounts, credit reports, investments, real estate and savings plans together in one dashboard, hosted on your own hardware.</p>
 
     <div class="hero-ctas reveal d3">
-      <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-primary btn-lg">
-        Get started
+      <a href="https://github.com/Halkhoori2000/multiwealth-site/issues" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+        Explore the project
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a href="#features" class="btn btn-ghost btn-lg">See features</a>
+      <a href="#current-project" class="btn btn-ghost btn-lg">What’s new</a>
       <a href="docs.html" class="btn btn-ghost btn-lg">Read the docs</a>
     </div>
 
+    <p class="snapshot-note reveal d3">Project snapshot · September 2026 · Private application, under active development</p>
     <div class="hero-stage reveal d4">
       <!-- floating depth chips -->
       <div class="float-chip" data-depth="34" style="top:-26px; left:-90px">
@@ -647,7 +698,7 @@
             <div class="wdot" style="background:#FF5F57"></div>
             <div class="wdot" style="background:#FEBC2E"></div>
             <div class="wdot" style="background:#28C840"></div>
-            <div class="url-pill">multiwealth · self-hosted</div>
+            <div class="url-pill">multiwealth · overview · illustrative preview</div>
           </div>
           <div class="app-layout">
             <div class="sidebar">
@@ -655,21 +706,23 @@
                 <div class="logo-mark"></div>
                 <span class="logo-txt">MultiWealth</span>
               </div>
-              <div class="sb on"><div class="sb-dot" style="background:#7C6FF7"></div>Overview</div>
-              <div class="sb"><div class="sb-dot" style="background:#0A84FF"></div>Accounts</div>
-              <div class="sb"><div class="sb-dot" style="background:#FBBF24"></div>Transactions</div>
-              <div class="sb"><div class="sb-dot" style="background:#30D158"></div>Investments</div>
-              <div class="sb"><div class="sb-dot" style="background:#FF9F0A"></div>Properties</div>
-              <div class="sb"><div class="sb-dot" style="background:#BF5AF2"></div>Tangibles</div>
-              <div class="sb"><div class="sb-dot" style="background:#64D2FF"></div>Pots</div>
-              <div class="sb"><div class="sb-dot" style="background:#FF453A"></div>Cheques</div>
+              <div class="sb on"><div class="sb-dot" style="background:#FF9F0A"></div>Overview</div>
+              <div class="sb-group">Personal Finance</div>
+              <div class="sb">Accounts <span class="sb-detail">Statements · Bank Agents</span></div>
+              <div class="sb">Transactions</div>
+              <div class="sb">Classify · Planner · Credit</div>
+              <div class="sb">Investments · Tangibles</div>
+              <div class="sb">Pots · Catalog</div>
+              <div class="sb-group estate">Real Estate</div>
+              <div class="sb">Estate · Tenants · Mortgages</div>
+              <div class="sb">Income · Expenses · Documents</div>
             </div>
             <div class="main-pane">
               <div class="nw-card">
                 <div class="nw-row">
                   <div>
                     <div class="nw-lbl">Total Net Worth</div>
-                    <div class="nw-val mono" data-count="3842500" data-prefix="AED ">AED 0</div>
+                    <div class="nw-val mono" data-count="3842500" data-prefix="AED ">AED 3,842,500</div>
                     <div class="nw-chg">
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
                       +8.4% this year
@@ -713,32 +766,31 @@
         <div class="mockup-reflection"></div>
       </div>
     </div>
+    <p class="preview-note">All previews use fictional balances, scores, transactions and rates.</p>
   </div>
 </section>
 
 <!-- ── STATS ── -->
-<section class="stats-wrap">
+<section class="stats-wrap" aria-label="Project at a glance">
   <div class="stats-grid">
-    <div class="stat-cell reveal">
-      <div class="stat-v grad-brand mono" data-count="28">0</div>
-      <div class="stat-l">UAE banks in the catalog</div>
-    </div>
-    <div class="stat-cell reveal d1">
-      <div class="stat-v mono" style="color:#30D158" data-count="700" data-suffix="+">0</div>
-      <div class="stat-l">bank products rate-monitored</div>
-    </div>
-    <div class="stat-cell reveal d2">
-      <div class="stat-v mono" style="font-size:18px;color:#7C6FF7">AED + USD</div>
-      <div class="stat-l">dual currency support</div>
-    </div>
-    <div class="stat-cell reveal d3">
-      <div class="stat-v">∞</div>
-      <div class="stat-l">no subscription · ever</div>
-    </div>
-    <div class="stat-cell reveal d4">
-      <div class="stat-v mono" style="color:#30D158" data-count="100" data-suffix="%">0</div>
-      <div class="stat-l">private &amp; local</div>
-    </div>
+    <div class="stat-cell reveal"><div class="stat-v grad-brand mono">29</div><div class="stat-l">bank &amp; issuer integrations in the catalog registry</div></div>
+    <div class="stat-cell reveal d1"><div class="stat-v mono" style="color:#30D158">AECB</div><div class="stat-l">credit report history &amp; facility tracking</div></div>
+    <div class="stat-cell reveal d2"><div class="stat-v mono" style="font-size:22px;color:#a89df7">AED</div><div class="stat-l">one view across multiple currencies</div></div>
+    <div class="stat-cell reveal d3"><div class="stat-v mono" style="font-size:22px">Review</div><div class="stat-l">statements, matches &amp; classifications</div></div>
+    <div class="stat-cell reveal d4"><div class="stat-v mono" style="font-size:22px;color:#30D158">Your host</div><div class="stat-l">local database &amp; document storage</div></div>
+  </div>
+</section>
+
+<section class="current-section" id="current-project">
+  <div class="sec-hdr reveal">
+    <p class="sec-overline">Inside the current project</p>
+    <h2 class="sec-h2 display grad-text">Built around your daily financial life</h2>
+    <p class="section-lead">A clear path from a statement to a decision, with dedicated spaces for personal finance and real estate.</p>
+  </div>
+  <div class="current-grid">
+    <a class="current-card reveal" href="docs.html#statements"><span class="feature-number mono">01 / RECORDS</span><h3>Know what’s missing</h3><p>Accounts, Statements and Bank Agents share one home. Review month-by-month coverage, source PDFs and reconciliation status.</p><span class="text-link">Explore statement review →</span></a>
+    <a class="current-card reveal d1" href="docs.html#credit"><span class="feature-number mono">02 / CREDIT</span><h3>See how your credit changes</h3><p>Keep AECB report history, compare facilities with your accounts and explore clearly labelled paydown estimates.</p><span class="text-link">Explore Credit →</span></a>
+    <a class="current-card reveal d2" href="docs.html#offers"><span class="feature-number mono">03 / INTELLIGENCE</span><h3>Keep the source in sight</h3><p>Browse Products, Compare, Offers and Alerts, with Key Facts Statement versions and material change history.</p><span class="text-link">Explore the Catalog →</span></a>
   </div>
 </section>
 
@@ -757,7 +809,7 @@
     </div>
     <div class="reveal d2 mc-stage">
       <div class="mc" data-tilt style="animation:float 5s ease-in-out infinite">
-        <div class="mono" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:12px">Net Worth — June 2026</div>
+        <div class="mono" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:12px">Net Worth — illustrative example</div>
         <div style="font-size:32px;font-weight:900;letter-spacing:-0.035em;color:var(--text);margin-bottom:4px">AED 3,842,500</div>
         <div style="font-size:12px;color:#30D158;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:4px">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
@@ -803,9 +855,9 @@
     <div class="reveal">
       <div class="feat-overline">Transactions</div>
       <h2 class="feat-h2 display grad-text">Every dirham, accounted for</h2>
-      <p class="feat-body">Import PDF or CSV bank statements and get a clean, categorized history in seconds. Payees normalize themselves, recurring payments are detected automatically, and duplicates never land twice.</p>
+      <p class="feat-body">Import supported PDF or CSV statements, inspect the transaction preview and confirm the rows you want to keep. Payee rules, recurring detection and duplicate flags help turn raw records into a useful history.</p>
       <div class="bullets">
-        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>PDF and CSV statement import per bank</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Supported PDF formats and a generic CSV importer</div>
         <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Payee rules + automatic recurring detection</div>
         <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Smart duplicate detection and review queue</div>
       </div>
@@ -909,7 +961,7 @@
     <div class="reveal">
       <div class="feat-overline">Bank Intelligence</div>
       <h2 class="feat-h2 display grad-text">The UAE banking market, watched for you</h2>
-      <p class="feat-body">A built-in catalog of 700+ products across 28 UAE banks — credit cards, deposits, savings, loans — re-scraped on a schedule. When a rate moves or a perk changes, you get a readable alert with the exact before and after.</p>
+      <p class="feat-body">Explore cards, accounts, deposits and loans through 29 bank and issuer integrations. The optional Intel service refreshes public product information and records changes, so you can compare terms, inspect source documents and follow offers over time.</p>
       <div class="bullets">
         <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Rate-change alerts with exact before/after</div>
         <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Compare cards, deposits and loans side-by-side</div>
@@ -919,8 +971,8 @@
     <div class="reveal d2 mc-stage">
       <div class="mc mc-green" data-tilt style="animation:float2 6s ease-in-out infinite .5s">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div style="font-size:13px;font-weight:700;color:var(--text)">Rate Alerts</div>
-          <div class="mono" style="font-size:10px;color:#30D158;background:rgba(48,209,88,0.08);border:1px solid rgba(48,209,88,0.18);border-radius:6px;padding:4px 10px">28 banks watched</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Catalog · Alerts</div>
+          <div class="mono" style="font-size:10px;color:#30D158;background:rgba(48,209,88,0.08);border:1px solid rgba(48,209,88,0.18);border-radius:6px;padding:4px 10px">Illustrative changes</div>
         </div>
         <div class="tx">
           <div class="tx-ico" style="background:rgba(48,209,88,0.12)">📈</div>
@@ -952,17 +1004,24 @@
   </div>
 </section>
 
+<section class="feat feat-spot-blue" id="credit">
+  <div class="feat-inner rev">
+    <div class="reveal"><div class="feat-overline">Credit &amp; AECB reports</div><h2 class="feat-h2 display grad-text">Your credit story, over time</h2><p class="feat-body">Keep each report in context. See score history, what changed since the previous report, and how reported facilities compare with the accounts you track today.</p><div class="bullets"><div class="bullet">Report archive and score trend</div><div class="bullet">Facility matching and utilization tracking</div><div class="bullet">Paydown scenarios shown as estimates</div></div><a class="text-link" href="docs.html#credit">See how Credit works →</a></div>
+    <div class="reveal d2"><div class="mc credit-preview"><div class="preview-heading"><strong>Credit · Report history</strong><span class="sample-pill">Illustrative data</span></div><div class="credit-score mono">742 <small>/ 900</small></div><p class="credit-context">Latest imported report <span>+18 since previous report</span></p><svg viewBox="0 0 460 100" role="img" aria-label="Illustrative credit score trend rising across six reports"><path d="M0 88H460M0 48H460M0 8H460" stroke="rgba(255,255,255,.08)"/><path d="M10 80L98 58L186 64L274 40L362 32L450 12" fill="none" stroke="#64D2FF" stroke-width="3"/><g fill="#64D2FF"><circle cx="10" cy="80" r="4"/><circle cx="98" cy="58" r="4"/><circle cx="186" cy="64" r="4"/><circle cx="274" cy="40" r="4"/><circle cx="362" cy="32" r="4"/><circle cx="450" cy="12" r="4"/></g></svg><div class="credit-details"><div><span>Reported facilities</span><strong>4 matched accounts</strong></div><div><span>What changed</span><strong>Lower card utilization</strong></div></div><p class="preview-note">Report facts and model estimates are shown separately.</p></div></div>
+  </div>
+</section>
+
 <!-- ── FEATURE 5: POTS & GOALS ── -->
 <section class="feat dark feat-spot-purple">
   <div class="feat-inner">
     <div class="reveal">
       <div class="feat-overline">Pots &amp; Goals</div>
-      <h2 class="feat-h2 display grad-text">Evidence-based budgeting, not vibes</h2>
+      <h2 class="feat-h2 display grad-text">Give every goal a place in your plan</h2>
       <p class="feat-body">Envelopes for money you're setting aside, trackers for balances that mirror reality, and sinking funds that compute their own monthly set-aside from real contractual dates — like an off-plan payment plan.</p>
       <div class="bullets">
         <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Envelope, tracker and view pot types</div>
         <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Sinking funds linked to payment plans</div>
-        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Monthly planner with double-count protection</div>
+        <div class="bullet"><div class="bchk"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>Plan spending, savings and investment together</div>
       </div>
     </div>
     <div class="reveal d2 mc-stage">
@@ -1005,6 +1064,13 @@
   </div>
 </section>
 
+<section class="feat feat-spot-blue" id="real-estate">
+  <div class="feat-inner rev">
+    <div class="reveal"><div class="feat-overline">Real Estate</div><h2 class="feat-h2 display grad-text">The property, and everything around it</h2><p class="feat-body">Move from portfolio equity to the details that keep a property running: tenants, leases, mortgages, rental income, expenses and documents. Off-plan schedules and co-ownership shares stay connected to the bigger picture.</p><a class="text-link" href="docs.html#properties">Explore Real Estate →</a></div>
+    <div class="reveal d2"><div class="mc"><div class="preview-heading"><strong>Real Estate workspace</strong><span class="sample-pill">Product overview</span></div><div class="estate-grid"><div><span>01</span><strong>Estate</strong><p>Value &amp; ownership</p></div><div><span>02</span><strong>Tenants</strong><p>People &amp; leases</p></div><div><span>03</span><strong>Mortgages</strong><p>Balances &amp; schedules</p></div><div><span>04</span><strong>Rental Income</strong><p>Due &amp; received</p></div><div><span>05</span><strong>Expenses</strong><p>Property costs</p></div><div><span>06</span><strong>Documents</strong><p>Files in context</p></div></div></div></div>
+  </div>
+</section>
+
 <!-- ── CAPABILITIES GRID ── -->
 <section class="cap-section">
   <div class="sec-hdr reveal">
@@ -1012,12 +1078,16 @@
     <h2 class="sec-h2 display grad-text">The complete wealth stack</h2>
   </div>
   <div class="cap-grid">
+    <div class="cap-cell reveal"><div class="cap-icon" style="color:#64D2FF">↗</div><div class="cap-title">Credit Reports</div><p class="cap-body">AECB report history, facility reconciliation, score changes and labelled estimates. Report ingestion uses the configured agent workflow.</p></div>
+    <div class="cap-cell reveal d1"><div class="cap-icon" style="color:#FBBF24">≡</div><div class="cap-title">Classify</div><p class="cap-body">Manage categories, payees and matching rules in one place. Review suggestions and assign spending, savings or investment buckets.</p></div>
+    <div class="cap-cell reveal d2"><div class="cap-icon" style="color:#a89df7">↳</div><div class="cap-title">Bank Agents <span class="sample-pill">In development</span></div><p class="cap-body">A dedicated Accounts tab for configured bank connections and sign-in prompts. Availability depends on the bank adapter and local setup.</p></div>
+
     <div class="cap-cell reveal">
       <div class="cap-icon" style="background:rgba(124,111,247,0.12)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C6FF7" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
       </div>
       <div class="cap-title">Bank Accounts</div>
-      <p class="cap-body">Current, savings, fixed deposits, credit cards and loans — with real credit-card semantics, utilization, and the new UAE dirham symbol everywhere.</p>
+      <p class="cap-body">Current accounts, savings, deposits, credit cards and loans, with balances, utilization, statement coverage and linked catalog products.</p>
     </div>
     <div class="cap-cell reveal d1">
       <div class="cap-icon" style="background:rgba(48,209,88,0.12)">
@@ -1059,21 +1129,21 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF453A" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h7M6 14h4"/><polyline points="14 14 16 16 20 12"/></svg>
       </div>
       <div class="cap-title">Cheques</div>
-      <p class="cap-body">First-class UAE cheque tracking — issued, deposited, cleared, bounced — with a real status lifecycle linked to your accounts and goals.</p>
+      <p class="cap-body">Track written, cleared, bounced and cancelled cheques from an account’s Chequebook, with due dates and links to account transactions.</p>
     </div>
     <div class="cap-cell reveal d3">
       <div class="cap-icon" style="background:rgba(48,209,88,0.12)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
       </div>
       <div class="cap-title">Product Catalog &amp; Alerts</div>
-      <p class="cap-body">700+ products across 28 UAE banks, re-scraped on a schedule. Rate changes and perk updates become readable alerts with exact diffs.</p>
+      <p class="cap-body">Products, comparisons, offers, rate alerts and KFS history. Refreshes come from the optional Intel service; coverage and freshness vary by source.</p>
     </div>
     <div class="cap-cell reveal d4">
       <div class="cap-icon" style="background:rgba(124,111,247,0.12)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C6FF7" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
-      <div class="cap-title">100% Private</div>
-      <p class="cap-body">Your data never leaves your machine. Self-hosted with no cloud, no subscriptions, no tracking, no ads — ever.</p>
+      <div class="cap-title">Hosted by you</div>
+      <p class="cap-body">Store financial records and documents on your own hardware. Online quotes, catalog refreshes and optional integrations connect to external services when used.</p>
     </div>
   </div>
 </section>
@@ -1083,23 +1153,23 @@
   <div class="how-inner">
     <div class="sec-hdr reveal">
       <p class="sec-overline">How it works</p>
-      <h2 class="sec-h2 display grad-text">Up and running in minutes</h2>
+      <h2 class="sec-h2 display grad-text">From records to a clearer picture</h2>
     </div>
     <div class="steps">
       <div class="step reveal">
         <div class="step-n">01</div>
         <div class="step-t">Add what you own</div>
-        <p class="step-b">Bank accounts, brokers, properties, vehicles, valuables. MultiWealth auto-detects the bank brand, account type, and currency.</p>
+        <p class="step-b">Create your accounts, brokers, properties and tangibles. Set currencies, ownership shares and opening balances.</p>
       </div>
       <div class="step reveal d2">
         <div class="step-n">02</div>
         <div class="step-t">Import your statements</div>
-        <p class="step-b">Drop PDF or CSV statements — transactions are parsed, payees normalized, recurring payments detected, duplicates removed.</p>
+        <p class="step-b">Import a supported PDF or CSV format. Review the detected account, transaction rows, duplicate flags and reconciliation before confirming.</p>
       </div>
       <div class="step reveal d4">
         <div class="step-n">03</div>
         <div class="step-t">See your full picture</div>
-        <p class="step-b">Net worth, portfolio, property equity, pots and spending in one dashboard — with live quotes and bank-rate alerts on top.</p>
+        <p class="step-b">Follow net worth, portfolio performance, credit history and property equity. Classify spending and turn upcoming commitments into a plan.</p>
       </div>
     </div>
   </div>
@@ -1107,7 +1177,7 @@
 
 <!-- ── BANKS MARQUEE ── -->
 <section class="marquee-section">
-  <p class="marquee-label">28 UAE banks in the product catalog</p>
+  <p class="marquee-label">29 bank &amp; issuer integrations · selected catalog sources</p>
   <div class="marquee-track">
     <div class="marquee-inner" id="marquee">
       <span class="bank-chip">RAKBANK</span>
@@ -1137,18 +1207,18 @@
   <div class="privacy-inner">
     <div class="reveal">
       <div class="feat-overline">Privacy First</div>
-      <h2 class="feat-h2 display grad-text">Your data never leaves your machine</h2>
-      <p class="feat-body">MultiWealth runs entirely on your own computer or server. No accounts to create, no data uploaded anywhere, no analytics, no ads. Your net worth is nobody's business but yours.</p>
-      <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-primary" style="margin-top:8px">
-        Self-host for free
+      <h2 class="feat-h2 display grad-text">Your financial records, on your hardware</h2>
+      <p class="feat-body">The core application stores your records in your PostgreSQL database and keeps uploaded documents on your host. Market charts and catalog refreshes use online sources. Optional bank and agent integrations have their own connections and setup.</p>
+      <a href="https://github.com/Halkhoori2000/multiwealth-site/issues" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top:8px">
+        View project status
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       </a>
     </div>
     <div class="pchk-list reveal d2">
-      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No cloud storage — everything stays local</span></div>
-      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No account required to run it</span></div>
-      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No subscription fees — forever free</span></div>
-      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">No analytics, tracking, or ads of any kind</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">Your own PostgreSQL database and document files</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">Core app served locally on your machine</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">Backups and deployment stay under your control</span></div>
+      <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">Online sources for market and catalog information</span></div>
       <div class="pchk"><div class="pchk-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="pchk-txt">Runs on your own hardware — laptop, Mac mini, or home server</span></div>
     </div>
   </div>
@@ -1159,11 +1229,11 @@
   <div class="cta-glow"></div>
   <div style="position:relative;z-index:1">
     <h2 class="cta-h display grad-text reveal">Take control of<br/>your wealth today.</h2>
-    <p class="cta-sub reveal d1">Self-host in minutes. Your data, your rules.</p>
+    <p class="cta-sub reveal d1">A personal wealth project under active development. Explore the guide or ask about access to the private application.</p>
     <div class="reveal d2">
-      <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" class="btn btn-primary btn-lg">
+      <a href="https://github.com/Halkhoori2000/multiwealth-site/issues" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        View on GitHub
+        Ask about access
       </a>
       <a href="docs.html" class="btn btn-ghost btn-lg" style="margin-left:10px">Read the docs</a>
     </div>
@@ -1178,11 +1248,11 @@
   </div>
   <div style="display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:12px">
     <a href="docs.html" style="font-size:12px;font-weight:500;color:rgba(150,170,200,0.6);text-decoration:none">Docs</a>
-    <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" style="font-size:12px;font-weight:500;color:rgba(150,170,200,0.6);text-decoration:none">GitHub</a>
+    <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" rel="noopener noreferrer" style="font-size:12px;font-weight:500;color:rgba(150,170,200,0.6);text-decoration:none">GitHub</a>
     <a href="#features" style="font-size:12px;font-weight:500;color:rgba(150,170,200,0.6);text-decoration:none">Features</a>
     <a href="#privacy" style="font-size:12px;font-weight:500;color:rgba(150,170,200,0.6);text-decoration:none">Privacy</a>
   </div>
-  <p style="font-size:11px;color:rgba(120,120,140,0.35)" class="mono">Private wealth management · Self-hosted · All rights reserved</p>
+  <p style="font-size:11px;color:rgba(120,120,140,0.35)" class="mono">Project snapshot · September 2026 · Self-hosted · All rights reserved</p>
 </footer>
 
 <script>
@@ -1317,7 +1387,7 @@
 <script type="module">
   const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canvas = document.getElementById('hero3d');
-  if (canvas && window.innerWidth > 700) {
+  if (canvas && !RM && window.innerWidth > 700) {
     try {
       const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
 

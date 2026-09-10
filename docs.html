@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docs — MultiWealth</title>
-  <meta name="description" content="MultiWealth documentation — installation, setup, and user guide for every module: accounts, transactions, investments, watchlist, properties, tangibles, pots, cheques, and the bank product catalog." />
+  <meta name="description" content="Current MultiWealth setup and user guide: accounts, statements, AECB credit reports, investments, real estate, Pots, product catalog, offers and optional integrations." />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -277,9 +277,23 @@
       .sidebar { display: none; }
       .docs-main { margin-left: 0; padding: 32px 24px 80px; }
     }
+
+    :root { --muted:#9aa9bd; --subtle:#91a7c3; }
+    a:focus-visible,button:focus-visible,summary:focus-visible { outline:2px solid #64D2FF;outline-offset:4px; }
+    .skip-link { position:fixed;top:8px;left:12px;transform:translateY(-180%);z-index:300;background:#fff;color:#000610;padding:12px;border-radius:8px; }
+    .skip-link:focus { transform:none; }
+    .table-scroll { overflow-x:auto;max-width:100%; }
+    .docs-main { min-width:0; }
+    .docs-main pre { white-space:pre;overflow-x:auto; }
+    .mobile-contents { display:none;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:28px; }
+    .mobile-contents summary { cursor:pointer;font-weight:600; }
+    .mobile-contents a { display:block;padding:7px 0;font-size:13px; }
+    @media(max-width:768px) { .mobile-contents { display:block; } nav { padding:0 16px; } .nav-right { gap:12px; } .nav-right>a:nth-child(2) { display:none; } .docs-main h1 { font-size:34px; } }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { transition:none!important;animation:none!important; } }
   </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to guide</a>
 
 <!-- ── NAV ── -->
 <nav>
@@ -290,510 +304,90 @@
   <div class="nav-right">
     <a href="index.html">Home</a>
     <a href="index.html#features">Features</a>
-    <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank">GitHub</a>
+    <a href="https://github.com/Halkhoori2000/multiwealth-site" target="_blank" rel="noopener noreferrer">GitHub</a>
     <span class="nav-badge">Docs</span>
   </div>
 </nav>
 
-<div class="docs-layout">
-
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Getting Started</div>
-      <a href="#overview"      class="sidebar-link active"><span class="sidebar-dot" style="background:#7C6FF7"></span>Overview</a>
-      <a href="#prerequisites" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Prerequisites</a>
-      <a href="#installation"  class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Installation</a>
-      <a href="#first-launch"  class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>First Launch</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Banking</div>
-      <a href="#add-account"   class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Add an Account</a>
-      <a href="#import"        class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Import Statements</a>
-      <a href="#transactions"  class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Transactions</a>
-      <a href="#payees"        class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Payees &amp; Recurring</a>
-      <a href="#cheques"       class="sidebar-link"><span class="sidebar-dot" style="background:#0A84FF"></span>Cheques</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Investments</div>
-      <a href="#brokers"       class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Add a Broker</a>
-      <a href="#holdings"      class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Add Holdings</a>
-      <a href="#inv-history"   class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Transaction History</a>
-      <a href="#watchlist"     class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Live Watchlist</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Properties & Tangibles</div>
-      <a href="#properties"    class="sidebar-link"><span class="sidebar-dot" style="background:#FBBF24"></span>Add a Property</a>
-      <a href="#tangibles"     class="sidebar-link"><span class="sidebar-dot" style="background:#FBBF24"></span>Vehicles &amp; Valuables</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Planning</div>
-      <a href="#pots"          class="sidebar-link"><span class="sidebar-dot" style="background:#64D2FF"></span>Pots &amp; Goals</a>
-      <a href="#planner"       class="sidebar-link"><span class="sidebar-dot" style="background:#64D2FF"></span>Monthly Planner</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Intelligence</div>
-      <a href="#catalog"       class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Product Catalog</a>
-      <a href="#alerts"        class="sidebar-link"><span class="sidebar-dot" style="background:#30D158"></span>Rate Alerts</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Reference</div>
-      <a href="#banks"         class="sidebar-link"><span class="sidebar-dot" style="background:var(--muted)"></span>Supported Banks</a>
-      <a href="#tips"          class="sidebar-link"><span class="sidebar-dot" style="background:var(--muted)"></span>Tips &amp; Shortcuts</a>
-    </div>
-  </aside>
-
-  <!-- ── MAIN CONTENT ── -->
-  <main class="docs-main">
-
-    <!-- OVERVIEW -->
-    <div id="overview" class="section-anchor">
-      <h1>Documentation</h1>
-      <p class="page-intro">
-        Everything you need to install MultiWealth, connect your accounts, and get a complete picture of your wealth — bank accounts, investments with a live watchlist, properties, vehicles and valuables, pots, cheques, and a 28-bank product catalog that alerts you when rates change.
-      </p>
-    </div>
-
-    <!-- PREREQUISITES -->
-    <h2 id="prerequisites" class="section-anchor">Prerequisites</h2>
-    <p>Before installing, make sure you have the following installed on your machine:</p>
-    <table>
-      <thead><tr><th>Tool</th><th>Version</th><th>Why</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Node.js</strong></td><td><span class="badge badge-green">20+</span></td><td>Runs both the frontend and backend</td></tr>
-        <tr><td><strong>PostgreSQL</strong></td><td><span class="badge badge-blue">14+</span></td><td>Stores all your financial data locally</td></tr>
-        <tr><td><strong>Python</strong></td><td><span class="badge badge-amber">3.11+ · optional</span></td><td>Powers the bank-intel sidecar that keeps the product catalog fresh</td></tr>
-      </tbody>
-    </table>
-    <div class="callout tip">
-      <span class="callout-icon">💡</span>
-      <div class="callout-body"><strong>macOS tip</strong>Install all three via Homebrew: <code>brew install node postgresql python</code></div>
-    </div>
-
-    <!-- INSTALLATION -->
-    <h2 id="installation" class="section-anchor">Installation</h2>
-
-    <h3>1. Clone the repository</h3>
-    <div class="code-block">
-      <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre>git clone git@github.com:Halkhoori2000/MultiWealth.git   (private beta - request access)
-cd MultiWealth</pre>
-    </div>
-
-    <h3>2. Install dependencies</h3>
-    <div class="code-block">
-      <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre><span class="c"># Frontend dependencies</span>
-npm install
-
-<span class="c"># Backend dependencies</span>
-cd server && npm install && cd ..</pre>
-    </div>
-
-    <h3>3. Configure environment variables</h3>
-    <p>Create a <code>.env</code> file in the project root:</p>
-    <div class="code-block">
-      <div class="code-header"><span class="code-lang">.env (root)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre>VITE_API_BASE_URL=<span class="s">http://localhost:3001</span>
-VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
-    </div>
-
-    <p>Create a <code>.env</code> file inside the <code>server/</code> folder:</p>
-    <div class="code-block">
-      <div class="code-header"><span class="code-lang">.env (server/)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre>DATABASE_URL=<span class="s">"postgresql://user:password@localhost:5432/multiwealth"</span></pre>
-    </div>
-
-    <div class="callout warn">
-      <span class="callout-icon">⚠️</span>
-      <div class="callout-body"><strong>Replace credentials</strong>Swap <code>user</code> and <code>password</code> with your actual PostgreSQL username and password. Run <code>psql -U postgres</code> to check what credentials you have.</div>
-    </div>
-
-    <h3>4. Set up the database</h3>
-    <div class="code-block">
-      <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre>cd server && npx prisma migrate deploy && cd ..</pre>
-    </div>
-    <p>This creates all the required tables in your PostgreSQL database automatically.</p>
-
-    <!-- FIRST LAUNCH -->
-    <h2 id="first-launch" class="section-anchor">First Launch</h2>
-    <p>Start the backend and frontend in two separate terminal windows:</p>
-    <div class="code-block">
-      <div class="code-header"><span class="code-lang">Terminal 1 — Backend</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre>cd server && npm run dev</pre>
-    </div>
-    <div class="code-block">
-      <div class="code-header"><span class="code-lang">Terminal 2 — Frontend</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
-      <pre>npm run dev</pre>
-    </div>
-    <p>Open <a href="http://localhost:5173" target="_blank">http://localhost:5173</a> in your browser. You'll see the MultiWealth dashboard — empty for now.</p>
-
-    <div class="callout info">
-      <span class="callout-icon">ℹ️</span>
-      <div class="callout-body"><strong>Keep both terminals running</strong>The frontend talks to the backend on port 3001. Both need to be running at the same time for the app to work.</div>
-    </div>
-
-    <!-- ADD ACCOUNT -->
-    <h2 id="add-account" class="section-anchor">Add a Bank Account</h2>
-    <p>Bank accounts are the foundation of MultiWealth. Each account tracks its balance, statement history, and transactions — with proper credit-card semantics (utilization, available credit, even overpaid cards) and the new UAE dirham symbol throughout.</p>
-
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Go to the Accounts page</div>
-          <div class="step-desc">Click <strong>Accounts</strong> in the left sidebar. You'll see your bank accounts grouped by bank.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Click "Add Account"</div>
-          <div class="step-desc">Hit the <strong>+ Add Account</strong> button in the top-right corner. A drawer slides in from the right.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Fill in the details</div>
-          <div class="step-desc">Select your bank, account type (Current, Savings, Fixed Deposit, Credit Card, Loan), enter the account name, and the current balance. MultiWealth styles the card with the bank's brand color automatically. Savings accounts can model their interest-credit schedule; credit cards take a limit and track utilization.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Save</div>
-          <div class="step-desc">Click <strong>Save</strong>. The account appears instantly, grouped under its bank. You can later link it to its product in the bank catalog to track its rates and perks.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- IMPORT STATEMENTS -->
-    <h2 id="import" class="section-anchor">Import Statements</h2>
-    <p>The fastest way to populate your transaction history is to import bank statements. MultiWealth supports both PDF and CSV formats.</p>
-
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Download your statement</div>
-          <div class="step-desc">Log in to your bank's online portal and download your statement as a PDF or CSV. Any date range works.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Open the account</div>
-          <div class="step-desc">Click on the account you want to import into. This opens the Account Detail panel.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Click "Import Statement"</div>
-          <div class="step-desc">Find the <strong>Import Statement</strong> button in the account panel. A file picker appears.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Drop your file</div>
-          <div class="step-desc">Drag and drop the PDF or CSV file onto the drop zone, or click to browse. MultiWealth auto-detects the bank format, statement period, and parses all transactions.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-title">Review and confirm</div>
-          <div class="step-desc">A preview shows the detected transactions. Duplicates (transactions already in the system) are highlighted and excluded automatically. Click <strong>Import</strong> to save.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout tip">
-      <span class="callout-icon">💡</span>
-      <div class="callout-body"><strong>Import multiple periods</strong>You can import statements from different months on the same account. Duplicates are automatically detected and skipped, so there's no risk of double-counting.</div>
-    </div>
-
-    <!-- TRANSACTIONS -->
-    <h2 id="transactions" class="section-anchor">Transactions</h2>
-    <p>Every imported or manually added transaction appears in the Transactions list. You can filter, search, and categorize them.</p>
-    <ul>
-      <li><strong>Categories</strong> — Assign a category (Groceries, Dining, Transport, etc.) to each transaction</li>
-      <li><strong>Payees</strong> — Tag the merchant or sender; payee rules apply themselves to future imports</li>
-      <li><strong>Notes</strong> — Add a private note to any transaction</li>
-      <li><strong>Manual entry</strong> — Click <strong>+ Add Transaction</strong> to log a cash payment or transfer not captured by a statement</li>
-      <li><strong>Filters</strong> — Filter by date range, account, category, payee, or amount — each filter clears individually</li>
-      <li><strong>Status</strong> — Imported transactions are Confirmed; manual ones show <strong>To Review</strong> until a statement confirms them</li>
-    </ul>
-
-    <!-- PAYEES & RECURRING -->
-    <h2 id="payees" class="section-anchor">Payees &amp; Recurring</h2>
-    <p>Raw bank descriptors are noisy — <code>CARREFOUR MAF DXB 0091</code> and <code>CARREFOUR HYP DEIRA</code> are the same place. MultiWealth normalizes them for you.</p>
-    <ul>
-      <li><strong>Payee rules</strong> — keyword rules map descriptors to clean payees automatically on import; unmatched descriptors land in a review queue where one click creates the rule</li>
-      <li><strong>Recurring detection</strong> — repeated payments (rent, DEWA, salaries, subscriptions) are detected as series automatically; promote a series to a recurring rule and future occurrences post themselves</li>
-      <li><strong>Upcoming view</strong> — detected and rule-based recurring payments surface in an upcoming-payments widget so month-end never surprises you</li>
-    </ul>
-
-    <!-- CHEQUES -->
-    <h2 id="cheques" class="section-anchor">Cheques</h2>
-    <p>Cheques are still everywhere in UAE life — rent, school fees, deposits. MultiWealth tracks each cheque through its real lifecycle.</p>
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Add a cheque</div>
-          <div class="step-desc">Go to <strong>Cheques</strong> in the sidebar, click <strong>+ Add Cheque</strong>, and enter the cheque number, payee, amount, linked account, and due date.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Move it through its lifecycle</div>
-          <div class="step-desc">Statuses follow real banking rules: <strong>issued → deposited → cleared</strong> (or <strong>bounced</strong> / <strong>cancelled</strong>). Cleared and cancelled are terminal — illegal jumps are rejected, so the history always tells the truth.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">See the impact</div>
-          <div class="step-desc">Marking a cheque cleared creates the matching account transaction. Cheques can also contribute to a goal — a rent cheque counts toward the pot that planned for it.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BROKERS -->
-    <h2 id="brokers" class="section-anchor">Add a Broker</h2>
-    <p>Brokers group your investment holdings. Add one broker per platform you use.</p>
-
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Go to Investments</div>
-          <div class="step-desc">Click <strong>Investments</strong> in the left sidebar.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Add a Broker</div>
-          <div class="step-desc">Click <strong>+ Add Broker</strong>. Enter the broker name (e.g. Saxo Bank, Binance, Al Ramz) and currency. The broker gets a stable auto-assigned color.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Save</div>
-          <div class="step-desc">The broker appears in your Investments page. Now you can add holdings inside it.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- HOLDINGS -->
-    <h2 id="holdings" class="section-anchor">Add Holdings</h2>
-    <p>Each holding is an individual stock, ETF, crypto, cash, or fund position under a broker.</p>
-
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Open a broker</div>
-          <div class="step-desc">Click on the broker row to expand it.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Add a Holding</div>
-          <div class="step-desc">Click <strong>+ Add Holding</strong>. Search the ticker (e.g. <code>AAPL</code>, <code>BTC</code>, <code>ALDAR</code>), set the asset type, quantity, and average cost. Non-AED holdings show the FX rate used for conversion.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">View performance</div>
-          <div class="step-desc">Once saved, the holding shows your quantity, average cost, current value, and gain/loss — all consolidated in AED at the portfolio level.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- INVESTMENT HISTORY -->
-    <h2 id="inv-history" class="section-anchor">Investment Transaction History</h2>
-    <p>Log every buy, sell, dividend, and interest event for accurate cost-basis tracking.</p>
-    <ul>
-      <li>Click any holding, then <strong>Add Transaction</strong></li>
-      <li>Choose the type: <strong>Buy</strong>, <strong>Sell</strong>, <strong>Dividend</strong>, or <strong>Interest</strong></li>
-      <li>Enter the date, quantity, and price per unit</li>
-      <li>Your average cost and total P&amp;L update automatically</li>
-    </ul>
-
-    <!-- WATCHLIST -->
-    <h2 id="watchlist" class="section-anchor">Live Watchlist</h2>
-    <p>A dedicated live-prices board with real-time charts — including <strong>ADX and DFM</strong>, the UAE exchanges most trackers ignore, alongside US markets and crypto.</p>
-    <ul>
-      <li><strong>Open it</strong> from Investments → <strong>Live Prices</strong> (opens in its own tab, works standalone)</li>
-      <li><strong>Add any symbol</strong> as <code>EXCHANGE:TICKER</code> — <code>ADX:ALDAR</code>, <code>DFM:EMAAR</code>, <code>NASDAQ:AAPL</code>, <code>BINANCE:BTCUSDT</code>; typing an unknown symbol in the filter offers to add it</li>
-      <li><strong>Three views</strong> — Cards (mini charts), Fit (the whole board sized to your screen), and List (dense, sortable); your choice is remembered</li>
-      <li><strong>Arrange it</strong> — drag to reorder, group by exchange, filter with <code>/</code>, flip ranges 1D / 1M / 3M / 1Y</li>
-      <li><strong>Market hours</strong> — open/closed dots per exchange, Ramadan-aware for ADX and DFM</li>
-    </ul>
-
-    <!-- PROPERTIES -->
-    <h2 id="properties" class="section-anchor">Add a Property</h2>
-    <p>Track your real estate portfolio with full detail — purchase price, current value, equity, leases, tenants, and off-plan payment plans with milestones.</p>
-
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Go to Properties</div>
-          <div class="step-desc">Click <strong>Properties</strong> in the left sidebar.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Click "Add Property"</div>
-          <div class="step-desc">Enter the property name, address (building / floor / unit), type (apartment, villa, townhouse, penthouse, land), beds and baths, size, view, and the purchase details. Co-owned? Record each owner's share — your dashboards show a "my share" lens.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Add leases (optional)</div>
-          <div class="step-desc">If the property is rented out, add a lease with the tenant, rent amount and schedule. Rent payments are validated against the lease period and tracked as income automatically.</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Add a payment plan (off-plan)</div>
-          <div class="step-desc">For off-plan properties, load the milestone schedule with due dates and amounts. Milestone status follows your cumulative payments (money is fungible — no false "overdue" on a specific milestone), and a what-if estimator shows your share at any ownership percentage.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TANGIBLES -->
-    <h2 id="tangibles" class="section-anchor">Vehicles &amp; Valuables</h2>
-    <p>The <strong>Tangibles</strong> page holds everything physical you own — filtered by category pills: Real Estate, Vehicles, Valuables.</p>
-    <ul>
-      <li><strong>Vehicles</strong> — pick the kind (car, SUV, van, motorcycle, bike, boat, trailer); the plate number is the identifier; attach documents like the Mulkiya, insurance policies, and insurance quotations</li>
-      <li><strong>Valuables</strong> — watches, jewellery, art; the serial number is the identifier</li>
-      <li><strong>Value tracking</strong> — record the purchase price and update the current value over time; a signed <strong>vs purchase</strong> delta appears once a current value exists</li>
-      <li><strong>Ownership</strong> — co-owned assets carry share percentages, and the page totals respect your share</li>
-    </ul>
-
-    <!-- POTS -->
-    <h2 id="pots" class="section-anchor">Pots &amp; Goals</h2>
-    <p>Pots are how MultiWealth does budgeting — evidence-based, not vibes. There are three kinds, each badged so you always know what a number means:</p>
-    <ul>
-      <li><strong>Envelope</strong> — money you're actively setting aside (vacation, emergency fund). Envelopes accept contributions from income and transfers, fill a progress bar, and celebrate when funded 🎉</li>
-      <li><strong>Tracker</strong> — mirrors a real balance (a loan being repaid, a linked account). Read-only where the truth lives elsewhere</li>
-      <li><strong>View</strong> — a grouping lens over other numbers; never double-counts</li>
-    </ul>
-    <p><strong>Sinking funds:</strong> link an envelope to a payment plan and it computes its own monthly set-aside from the real contractual due dates — "set aside AED 8,400/mo to hit the next milestone" — instead of you guessing.</p>
-
-    <!-- PLANNER -->
-    <h2 id="planner" class="section-anchor">Monthly Planner</h2>
-    <p>Set a monthly plan by category and monitor actual spend against it.</p>
-    <ul>
-      <li>Set your estimated monthly income</li>
-      <li>Allocate a budget to each spending category (Groceries, Dining, Transport, etc.)</li>
-      <li>Envelope contributions appear as protected planner lines — the planner refuses to double-count money that's both "budgeted" and "set aside"</li>
-      <li>As transactions come in, actual spend tracks automatically against each category limit</li>
-    </ul>
-
-    <div class="callout tip">
-      <span class="callout-icon">💡</span>
-      <div class="callout-body"><strong>Planner resets monthly</strong>The planner always shows the current calendar month. Import your latest statement at the start of each month to keep it honest.</div>
-    </div>
-
-    <!-- CATALOG -->
-    <h2 id="catalog" class="section-anchor">Product Catalog</h2>
-    <p>MultiWealth ships with a living catalog of the UAE banking market: <strong>700+ products across 28 banks</strong> — credit cards, savings accounts, fixed deposits, loans — kept fresh by a scheduled scraper sidecar.</p>
-    <ul>
-      <li><strong>Browse</strong> — open <strong>Catalog</strong> and filter by bank or product category; Islamic products carry their structure (Murabaha, Wakala, etc.)</li>
-      <li><strong>Compare</strong> — put cards, deposits, or loans side-by-side: rates, fees, tenors, rewards</li>
-      <li><strong>Link your accounts</strong> — connect a real account to its catalog product from either side; your account card then knows its own perks and rates</li>
-    </ul>
-
-    <!-- ALERTS -->
-    <h2 id="alerts" class="section-anchor">Rate Alerts</h2>
-    <p>Every re-scrape diffs every product against its last known state. Changes become a human-readable alert feed:</p>
-    <ul>
-      <li><strong>Rate moves</strong> — "FAB Fixed Deposit 12M: 4.10% → 4.35%" with good/bad-news coloring</li>
-      <li><strong>Perk changes</strong> — rewards restructures, fee waivers, tenor table updates; click any alert to expand the exact before/after</li>
-      <li><strong>Lifecycle</strong> — new products appear, and products pulled from a bank's site are archived (never silently deleted)</li>
-    </ul>
-
-    <!-- SUPPORTED BANKS -->
-    <h2 id="banks" class="section-anchor">Supported UAE Banks</h2>
-    <p>Statement import auto-detects and parses PDF/CSV statements from these banks:</p>
-    <table>
-      <thead><tr><th>Bank</th><th>PDF</th><th>CSV</th></tr></thead>
-      <tbody>
-        <tr><td><strong>RAKBANK</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
-        <tr><td><strong>First Abu Dhabi Bank (FAB)</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
-        <tr><td><strong>ADCB</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
-        <tr><td><strong>Emirates NBD</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
-        <tr><td><strong>Mashreq</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
-        <tr><td><strong>Citi UAE</strong></td><td><span class="badge badge-green">✓ Supported</span></td><td><span class="badge badge-green">✓ Supported</span></td></tr>
-      </tbody>
-    </table>
-    <div class="callout info">
-      <span class="callout-icon">ℹ️</span>
-      <div class="callout-body"><strong>Catalog coverage is wider</strong>The product catalog and rate alerts cover <strong>28 UAE banks</strong> — statement parsing covers the six above, with more added over time.</div>
-    </div>
-
-    <!-- TIPS -->
-    <h2 id="tips" class="section-anchor">Tips &amp; Shortcuts</h2>
-    <ul>
-      <li><strong>Import often</strong> — Download and import statements monthly to keep your net worth accurate</li>
-      <li><strong>Start with banking</strong> — Add all your bank accounts first, then investments, then properties and tangibles</li>
-      <li><strong>Duplicate detection is automatic</strong> — You can safely re-import the same statement; duplicates are skipped</li>
-      <li><strong>Dates are dd/mm/yyyy</strong> — UAE style, everywhere in the app</li>
-      <li><strong>Archive, don't delete</strong> — financial records archive reversibly by default; hard delete is always a deliberate second step</li>
-      <li><strong>Everything is local</strong> — Your data lives in PostgreSQL on your machine. Back it up with <code>pg_dump multiwealth &gt; backup.sql</code></li>
-      <li><strong>Restore a backup</strong> — <code>psql multiwealth &lt; backup.sql</code></li>
-    </ul>
-
-    <div class="callout info">
-      <span class="callout-icon">ℹ️</span>
-      <div class="callout-body"><strong>Found an issue?</strong>Open a GitHub issue at <a href="https://github.com/Halkhoori2000/multiwealth-site/issues" target="_blank">github.com/Halkhoori2000/MultiWealth/issues</a></div>
-    </div>
-
-  </main>
-
-  <!-- ── ON THIS PAGE ── -->
-  <aside class="on-this-page">
-    <div class="otp-label">On this page</div>
-    <a href="#overview"      class="otp-link">Overview</a>
-    <a href="#prerequisites" class="otp-link">Prerequisites</a>
-    <a href="#installation"  class="otp-link">Installation</a>
-    <a href="#first-launch"  class="otp-link">First Launch</a>
-    <a href="#add-account"   class="otp-link">Add an Account</a>
-    <a href="#import"        class="otp-link">Import Statements</a>
-    <a href="#transactions"  class="otp-link">Transactions</a>
-    <a href="#payees"        class="otp-link">Payees &amp; Recurring</a>
-    <a href="#cheques"       class="otp-link">Cheques</a>
-    <a href="#brokers"       class="otp-link">Add a Broker</a>
-    <a href="#holdings"      class="otp-link">Add Holdings</a>
-    <a href="#inv-history"   class="otp-link">Investment History</a>
-    <a href="#watchlist"     class="otp-link">Live Watchlist</a>
-    <a href="#properties"    class="otp-link">Add a Property</a>
-    <a href="#tangibles"     class="otp-link">Vehicles &amp; Valuables</a>
-    <a href="#pots"          class="otp-link">Pots &amp; Goals</a>
-    <a href="#planner"       class="otp-link">Monthly Planner</a>
-    <a href="#catalog"       class="otp-link">Product Catalog</a>
-    <a href="#alerts"        class="otp-link">Rate Alerts</a>
-    <a href="#banks"         class="otp-link">Supported Banks</a>
-    <a href="#tips"          class="otp-link">Tips &amp; Shortcuts</a>
-  </aside>
-
-</div>
+<div class="docs-layout"><aside class="sidebar" aria-label="Documentation navigation"><div class="sidebar-section"><div class="sidebar-section-label">Getting started</div><a href="#overview" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Current project guide</a><a href="#navigation" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Find your way around</a><a href="#prerequisites" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Prerequisites</a><a href="#installation" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Installation</a><a href="#first-launch" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>First launch &amp; deployment modes</a></div><div class="sidebar-section"><div class="sidebar-section-label">Banking</div><a href="#add-account" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Accounts</a><a href="#import" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Import statements</a><a href="#statements" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Statement coverage &amp; reconciliation</a><a href="#transactions" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Transactions</a><a href="#payees" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Classify &amp; recurring payments</a><a href="#cheques" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Chequebooks</a></div><div class="sidebar-section"><div class="sidebar-section-label">Personal finance</div><a href="#credit" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Credit &amp; AECB reports</a><a href="#brokers" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Brokers &amp; portfolio</a><a href="#holdings" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Holdings</a><a href="#inv-history" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Investment activity</a><a href="#watchlist" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Live watchlist</a></div><div class="sidebar-section"><div class="sidebar-section-label">Real estate &amp; tangibles</div><a href="#properties" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Real Estate</a><a href="#tangibles" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Tangibles</a></div><div class="sidebar-section"><div class="sidebar-section-label">Planning</div><a href="#pots" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Pots &amp; goals</a><a href="#planner" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Monthly Planner</a></div><div class="sidebar-section"><div class="sidebar-section-label">Intelligence</div><a href="#catalog" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Product Catalog</a><a href="#alerts" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Alerts &amp; KFS history</a><a href="#offers" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Offers &amp; campaign history</a><a href="#intel-setup" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Optional Intel setup</a></div><div class="sidebar-section"><div class="sidebar-section-label">Integrations</div><a href="#bank-agents" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Bank Agents</a><a href="#copilot" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Copilot &amp; agent integrations</a></div><div class="sidebar-section"><div class="sidebar-section-label">Reference</div><a href="#banks" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Statement parser coverage</a><a href="#privacy" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Storage &amp; connections</a><a href="#tips" class="sidebar-link"><span class="sidebar-dot" style="background:#7C6FF7"></span>Shortcuts &amp; backups</a></div></aside><main class="docs-main" id="main-content"><details class="mobile-contents"><summary>Browse this guide</summary><a href="#overview">Current project guide</a><a href="#navigation">Find your way around</a><a href="#prerequisites">Prerequisites</a><a href="#installation">Installation</a><a href="#first-launch">First launch &amp; deployment modes</a><a href="#add-account">Accounts</a><a href="#import">Import statements</a><a href="#statements">Statement coverage &amp; reconciliation</a><a href="#transactions">Transactions</a><a href="#payees">Classify &amp; recurring payments</a><a href="#cheques">Chequebooks</a><a href="#credit">Credit &amp; AECB reports</a><a href="#brokers">Brokers &amp; portfolio</a><a href="#holdings">Holdings</a><a href="#inv-history">Investment activity</a><a href="#watchlist">Live watchlist</a><a href="#properties">Real Estate</a><a href="#tangibles">Tangibles</a><a href="#pots">Pots &amp; goals</a><a href="#planner">Monthly Planner</a><a href="#catalog">Product Catalog</a><a href="#alerts">Alerts &amp; KFS history</a><a href="#offers">Offers &amp; campaign history</a><a href="#intel-setup">Optional Intel setup</a><a href="#bank-agents">Bank Agents</a><a href="#copilot">Copilot &amp; agent integrations</a><a href="#banks">Statement parser coverage</a><a href="#privacy">Storage &amp; connections</a><a href="#tips">Shortcuts &amp; backups</a></details><h1 id="overview" class="section-anchor">Current project guide</h1>
+<p class="page-intro">A guide to the current MultiWealth application: Overview, Personal Finance and Real Estate. Updated September 2026.</p><p>The application is in a private repository and under active development. This website is its showcase; it does not provide a hosted finance account. <a href="https://github.com/Halkhoori2000/multiwealth-site/issues">Ask about access</a> before following the installation steps.</p>
+<h2 id="navigation" class="section-anchor">Find your way around</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Workspace</th><th scope="col">Pages</th></tr></thead><tbody><tr><td>Overview</td><td>Net worth, assets, liabilities and breakdowns across your holdings.</td></tr><tr><td>Personal Finance</td><td>Accounts, Transactions, Classify, Planner, Credit, Investments, Tangibles, Pots and Catalog.</td></tr><tr><td>Accounts tabs</td><td>Accounts, Statements and Bank Agents. Chequebooks live inside account details.</td></tr><tr><td>Real Estate</td><td>Estate, Tenants, Mortgages, Rental Income, Expenses and Documents.</td></tr><tr><td>Catalog</td><td>Products, Compare, Offers and Alerts, plus Key Facts Statement history.</td></tr></tbody></table></div>
+<h2 id="prerequisites" class="section-anchor">Prerequisites</h2>
+<p>Use a local PostgreSQL instance and a supported Node release. These requirements reflect the installed Vite 8 and Prisma 7 toolchain.</p><div class="table-scroll"><table><thead><tr><th scope="col">Tool</th><th scope="col">Requirement</th></tr></thead><tbody><tr><td>Node.js</td><td>22.12+ on the Node 22 line, or Node 24+. The dependency engine ranges also accept Node 20.19+.</td></tr><tr><td>PostgreSQL</td><td>14+; a running server and a role that can create your local databases.</td></tr><tr><td>Python</td><td>3.11+ for the optional Intel catalog service.</td></tr><tr><td>Git</td><td>Access to the private application repository.</td></tr></tbody></table></div>
+<h2 id="installation" class="section-anchor">Installation</h2>
+<p>The example below creates a fresh development database. Use your own database role and password in the connection strings.</p><h3>1. Clone and install</h3><div class="code-block"><div class="code-header"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>git clone git@github.com:Halkhoori2000/MultiWealth.git
+cd MultiWealth
+npm ci
+npm --prefix server ci</pre></div><h3>2. Configure the backend</h3><p>Create <code>server/.env</code> from <code>server/.env.example</code>:</p><div class="code-block"><div class="code-header"><span class="code-lang">server/.env</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>DATABASE_URL=&quot;postgresql://user:password@localhost:5432/multiwealth_dev&quot;
+INTEL_DATABASE_URL=&quot;postgresql://user:password@localhost:5432/multiwealth_intel&quot;
+PORT=3001
+HOST=127.0.0.1</pre></div><h3>3. Configure the frontend</h3><p>Create a root <code>.env.development.local</code> file for this development setup. The frontend’s API URL must match the backend port.</p><div class="code-block"><div class="code-header"><span class="code-lang">.env.development.local</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>VITE_API_URL=http://localhost:3001</pre></div><h3>4. Create the app database and generate clients</h3><p>Run from the project root, after setting your PostgreSQL credentials. <code>createdb</code> uses your local PostgreSQL connection settings.</p><div class="code-block"><div class="code-header"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>createdb multiwealth_dev
+npm --prefix server run db:generate
+cd server
+npx prisma migrate deploy
+cd ..</pre></div><p>The main app schema uses Prisma migrations. The separate Intel schema uses Alembic; initialize it using the <a href="#intel-setup">Intel setup</a> below when using the Catalog.</p>
+<h2 id="first-launch" class="section-anchor">First launch &amp; deployment modes</h2>
+<p>For the fresh development setup above, start these commands from the project root in separate terminals:</p><div class="code-block"><div class="code-header"><span class="code-lang">Terminal 1 — backend</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>npm run server</pre></div><div class="code-block"><div class="code-header"><span class="code-lang">Terminal 2 — frontend</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>npm run dev</pre></div><p>Open <code>http://localhost:5173</code>. The backend health endpoint is <code>http://localhost:3001/health</code>.</p><h3>Existing personal deployment</h3><p>The repository also includes a separate pair of scripts for its configured <code>multiwealth_prod</code> database:</p><div class="code-block"><div class="code-header"><span class="code-lang">Terminal 1 — existing database</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>npm run server:prod</pre></div><div class="code-block"><div class="code-header"><span class="code-lang">Terminal 2 — matching frontend</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>npm run client:prod</pre></div><p>This pair uses backend port <strong>3002</strong> and frontend port <strong>5174</strong>. The frontend loads <code>.env.proddb</code>. The server script expects a local PostgreSQL role matching your OS username. Use this pair only after configuring that database and applying its migrations; it does not create a database. Keep each frontend paired with its matching backend.</p>
+<h2 id="add-account" class="section-anchor">Accounts</h2>
+<p>Open <strong>Personal Finance → Accounts</strong> to create a current account, savings account, fixed deposit, credit card or loan. Set the institution, account kind, currency and balance. Link a catalog product where available to keep its published terms nearby.</p><ul><li><strong>Account detail</strong> brings together balances, transactions, statements and account-specific controls.</li><li><strong>Liabilities</strong> include credit cards and loans; card utilization is shown using the account’s credit limit.</li><li><strong>Transfers</strong> connect movements between tracked accounts so they can be distinguished from ordinary spending.</li></ul>
+<h2 id="import" class="section-anchor">Import statements</h2>
+<p>Use the import action in Accounts for supported PDFs or CSVs. Review each file before confirming it.</p><ul><li>Check the detected institution, destination account, currency and statement period. A supported statement can prefill a new account.</li><li>Inspect transaction rows, categories, payees and duplicate flags. Parser warnings and reconciliation differences need review.</li><li>For a supported locked PDF, provide its document password when prompted.</li><li>Confirm the import after reviewing the selected rows. Duplicate detection reduces repeat imports; the preview is the place to check the result.</li><li>Keep the original PDF attached to its statement record for later inspection.</li></ul><p><a href="#banks">See the current parser coverage</a>. Bank-specific PDF parsing and generic CSV parsing have different coverage.</p>
+<h2 id="statements" class="section-anchor">Statement coverage &amp; reconciliation</h2>
+<p>Open the <strong>Statements</strong> tab beside Accounts. A month-by-month grid shows coverage across accounts, with statement records below it.</p><ul><li>Inspect missing months and expected statement dates; mark months where no statement is expected.</li><li>Filter by account or month and open, attach or replace a source PDF.</li><li>Review opening and closing balances, flow totals and reconciliation badges.</li><li>Keep reissued statements traceable through their replacement records.</li></ul>
+<h2 id="transactions" class="section-anchor">Transactions</h2>
+<p>Search, filter and review imported and manually entered transactions in <strong>Personal Finance → Transactions</strong>.</p><ul><li>Filter by account, date, category, payee and other available fields.</li><li>Edit classifications, add notes and review transaction status.</li><li>Use tags and links to connect transactions to Pots or other records.</li><li>Export transaction rows to CSV for your own analysis.</li></ul>
+<h2 id="payees" class="section-anchor">Classify &amp; recurring payments</h2>
+<p><strong>Classify</strong> is the shared home for categories, payees and matching rules. It replaces the old separate Categories and Payees pages.</p><ul><li>Map noisy bank descriptions to recognizable payees, and review suggested classifications.</li><li>Manage categories and assign spending, savings or investment buckets for the Planner.</li><li>Recurring detection groups repeated payments; recurring rules and series help track expected activity.</li></ul>
+<h2 id="cheques" class="section-anchor">Chequebooks</h2>
+<p>Open an account’s detail panel and its <strong>Chequebook</strong>. Cheques are not a separate sidebar page.</p><ul><li>Record cheque numbers, payees, amounts and due dates against the account.</li><li>The current statuses are <strong>written</strong>, <strong>cleared</strong>, <strong>bounced</strong> and <strong>cancelled</strong>.</li><li>A bounced cheque can return to written or be cancelled. Cleared and cancelled states are terminal.</li><li>Clearing supports linking the matching account transaction. Pending cheque totals help show upcoming commitments.</li></ul>
+<h2 id="credit" class="section-anchor">Credit &amp; AECB reports</h2>
+<p>Open <strong>Personal Finance → Credit</strong> for imported AECB report history. The page currently receives reports through the configured agent ingestion workflow; it has no direct PDF upload button.</p><ul><li><strong>Report history:</strong> view scores and bands from stored reports, compare changes and open archived documents.</li><li><strong>Facilities:</strong> match reported accounts to your tracked accounts and inspect limit or balance differences.</li><li><strong>Current position:</strong> compare report snapshots with current card balances and utilization.</li><li><strong>Estimates:</strong> the page includes a score estimator and paydown scenarios. These are model outputs, separate from the score printed in an AECB report.</li></ul>
+<h2 id="brokers" class="section-anchor">Brokers &amp; portfolio</h2>
+<p>Add a broker in <strong>Investments</strong> for each platform you use. Holdings and uninvested broker cash contribute to the portfolio view.</p><p>Track stocks, funds and crypto, with broker-level breakdowns, documents, allocation targets and portfolio history. Values are consolidated into AED while retaining the holding’s currency.</p>
+<h2 id="holdings" class="section-anchor">Holdings</h2>
+<p>Add a holding under its broker, select its type and symbol where applicable, and record quantity and cost. Review the price source, valuation and currency conversion shown by the application.</p><p>Broker cash is tracked separately from invested holdings, so cash awaiting investment remains part of the portfolio.</p>
+<h2 id="inv-history" class="section-anchor">Investment activity</h2>
+<p>Record buys, sells, dividends and interest. Investment transaction history provides the context for quantities, cost basis and performance.</p><p>Supported investment statement parsers currently include Al Ramz and Binance. Other brokers can still be tracked manually; a broker record does not imply automatic statement support.</p>
+<h2 id="watchlist" class="section-anchor">Live watchlist</h2>
+<p>Open <strong>Live Prices</strong> from Investments to use the standalone market board.</p><ul><li>Follow symbols from ADX, DFM, US markets and crypto, subject to the external provider’s coverage.</li><li>Switch between Cards, Fit and List layouts, reorder symbols and group by exchange.</li><li>Filter the board, change chart ranges and inspect exchange status.</li><li>Charts and quotes require an internet connection. Availability and quote timing depend on the provider.</li></ul>
+<h2 id="properties" class="section-anchor">Real Estate</h2>
+<p><strong>Real Estate</strong> is a dedicated workspace with six pages:</p><div class="table-scroll"><table><thead><tr><th scope="col">Page</th><th scope="col">Use it for</th></tr></thead><tbody><tr><td>Estate</td><td>Property values, ownership shares, status, purchase details and off-plan payment milestones.</td></tr><tr><td>Tenants</td><td>Tenant records, lease details and the relationship to each property.</td></tr><tr><td>Mortgages</td><td>Linked borrowing, repayment schedules and property debt.</td></tr><tr><td>Rental Income</td><td>Rent schedules, due payments and recorded receipts.</td></tr><tr><td>Expenses</td><td>Property costs and their supporting records.</td></tr><tr><td>Documents</td><td>Files attached to properties and their related records.</td></tr></tbody></table></div><p>Co-owned properties retain ownership shares. Off-plan payment schedules connect commitments and milestones to the wider wealth view.</p>
+<h2 id="tangibles" class="section-anchor">Tangibles</h2>
+<p><strong>Personal Finance → Tangibles</strong> tracks physical assets, including vehicles and valuables, with purchase price, current value and ownership details.</p><p>Attach relevant documents such as vehicle registration and insurance, record asset identifiers, and track changes in value. The dedicated Real Estate workspace handles property operations such as leases and rent.</p>
+<h2 id="pots" class="section-anchor">Pots &amp; goals</h2>
+<p>Pots bring goals, upcoming commitments and tracked balances into one view.</p><ul><li><strong>Envelopes</strong> track money set aside and progress toward a target.</li><li><strong>Trackers</strong> reflect linked balances, such as an account, investment portfolio or debt.</li><li><strong>Views</strong> group values for a particular goal or perspective.</li><li>Targets, dates and linked contractual milestones can inform the monthly amount to set aside.</li><li>Contributions and transaction links keep progress connected to your records.</li></ul>
+<h2 id="planner" class="section-anchor">Monthly Planner</h2>
+<p>Use <strong>Planner</strong> to organize income, spending, savings and investment for a selected month.</p><ul><li>Set the plan and compare it with recorded activity.</li><li>Category buckets come from Classify; Pots can contribute planned allocations.</li><li>Review recurring commitments and the difference between planned and actual amounts.</li><li>Use month navigation to inspect past activity and upcoming plans.</li></ul>
+<h2 id="catalog" class="section-anchor">Product Catalog</h2>
+<p>The Intel registry contains <strong>29 bank and issuer integrations</strong>, including AMEX Middle East. This is a count of configured integrations, not a guarantee that every product or field is available.</p><p>Browse accounts, cards, deposits and loans; filter by institution or product category; compare terms and link a catalog product to your account. Source links and Key Facts Statements provide context for the displayed terms.</p><p>Catalog data depends on the optional Intel service and its latest successful refresh. The project does not bundle a fixed, guaranteed product count.</p>
+<h2 id="alerts" class="section-anchor">Alerts &amp; KFS history</h2>
+<p>Catalog → Alerts shows recorded product changes and before/after values. Key Facts Statement history allows inspection of document versions and differences.</p><p>Changes appear inside the application after a successful refresh. There is no built-in push notification service. Coverage and refresh health depend on the public source and scraper setup.</p>
+<h2 id="offers" class="section-anchor">Offers &amp; campaign history</h2>
+<p>Catalog → Offers tracks published campaigns, validity windows, source links and material edits. It distinguishes a routine check from an actual offer update.</p><p>Campaign producers currently cover ADCB, Citi, FAB, Mashreq, RAKBANK, Al Hilal and NBF. Discovery completeness varies by institution; campaign coverage is narrower than the overall catalog registry.</p>
+<h2 id="intel-setup" class="section-anchor">Optional Intel setup</h2>
+<p>Intel has its own database and Python environment. Its connection must refer to the same database as the backend’s <code>INTEL_DATABASE_URL</code>. Run from the project root:</p><div class="code-block"><div class="code-header"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>cd services/intel
+python3 -m venv .venv
+.venv/bin/pip install -e .
+createdb multiwealth_intel
+export INTEL_DATABASE_URL=&quot;postgresql://user:password@localhost:5432/multiwealth_intel&quot;
+.venv/bin/python -m intel migrate
+.venv/bin/python -m intel seed
+.venv/bin/python -m intel scrape citibank
+.venv/bin/python -m intel health</pre></div><p>The scrape command contacts public bank sources. A daily scheduling script is included, but cloning the project does not install that schedule. Follow <code>services/intel/README.md</code> in your checkout for scheduling and coverage diagnostics.</p>
+<h2 id="bank-agents" class="section-anchor">Bank Agents</h2>
+<p>The <strong>Bank Agents</strong> tab beside Accounts provides configured bank connections, credential entry and sign-in prompts for the local adapter workflow.</p><p>This integration is under active development. Support depends on the individual bank adapter, its current eligibility and your local browser setup. It is not a universal bank-sync service. Review staged imports before accepting them.</p>
+<h2 id="copilot" class="section-anchor">Copilot &amp; agent integrations</h2>
+<p>The in-app Copilot has an Activity feed for ingestion and classification events. Its Chat view is still a UI preview with a disabled input; the showcase does not advertise it as a working chat assistant.</p><p>Agent-driven statement staging, classification and credit report ingestion require a separately configured workflow. An optional MCP adapter also exposes selected app and catalog operations to a configured agent environment.</p><p>External integrations use their own services and permissions. They are not automatically installed or enabled by starting the frontend and backend.</p>
+<h2 id="banks" class="section-anchor">Statement parser coverage</h2>
+<p>The current bank-specific PDF parser registry covers these formats. Support refers to known statement layouts, not every document issued by an institution.</p><div class="table-scroll"><table><thead><tr><th scope="col">Institution</th><th scope="col">Registered PDF format</th></tr></thead><tbody><tr><td>RAKBANK</td><td>Account and credit card statements</td></tr><tr><td>ADCB</td><td>Account, credit card and consolidated account statements</td></tr><tr><td>First Abu Dhabi Bank (FAB)</td><td>Supported FAB statement layout</td></tr><tr><td>Mashreq Neo</td><td>Supported Neo account statement layout</td></tr><tr><td>Citi</td><td>Credit card statements</td></tr><tr><td>Al Ramz</td><td>Investment statements</td></tr><tr><td>Binance</td><td>Investment statements</td></tr></tbody></table></div><p><strong>Emirates NBD does not currently have a dedicated PDF parser in this registry.</strong> It can be represented in Accounts and the Catalog without implying PDF import support.</p><h3>CSV is format-based</h3><p>The generic CSV importer recognizes date and description columns plus debit/credit columns or a single amount column. Compatibility depends on the headers and values, rather than a bank-specific support badge. For example:</p><div class="code-block"><div class="code-header"><span class="code-lang">Illustrative CSV</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>Date,Description,Debit,Credit
+2026-09-01,Example purchase,125.00,
+2026-09-02,Example receipt,,500.00</pre></div><p>Always inspect the parsed rows and any skipped-row warnings before confirming.</p>
+<h2 id="privacy" class="section-anchor">Storage &amp; connections</h2>
+<p>The core app stores financial records in PostgreSQL and uploaded documents on your host. Backups, access to that machine and deployment are controlled by you.</p><p>Market data and embedded charts contact external providers. Intel fetches public banking information. Optional bank adapters and agent integrations have additional connections. Self-hosted storage does not mean every feature is offline.</p><p>All balances, scores, rates and transactions in the showcase previews are fictional examples.</p>
+<h2 id="tips" class="section-anchor">Shortcuts &amp; backups</h2>
+<ul><li><strong>Command search:</strong> press <code>⌘K</code> or <code>Ctrl+K</code> to open the command palette.</li><li><strong>Page search:</strong> several lists use <code>/</code> to focus their search field.</li><li><strong>Keep source documents:</strong> statement coverage and reconciliation are easier to review alongside the original PDFs.</li><li><strong>Back up the right database:</strong> the repository backup script defaults to <code>multiwealth_prod</code>. Set <code>BACKUP_DB</code> or <code>BACKUP_DATABASE_URL</code> for another deployment.</li><li><strong>Include files:</strong> non-statement uploads are included by default; <code>INCLUDE_UPLOADS=1</code> includes statement PDFs too. See <code>scripts/backup-db.sh</code> for retention and restore instructions.</li></ul><div class="code-block"><div class="code-header"><span class="code-lang">Example: back up the fresh development setup</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre>BACKUP_DB=multiwealth_dev INCLUDE_UPLOADS=1 npm run backup</pre></div><p>Database credentials and the selected backup destination must match your own setup. <a href="https://github.com/Halkhoori2000/multiwealth-site/issues">Report a documentation issue</a>.</p>
+</main><aside class="on-this-page" aria-label="On this page"><div class="otp-label">On this page</div><a href="#overview" class="otp-link">Current project guide</a><a href="#navigation" class="otp-link">Find your way around</a><a href="#prerequisites" class="otp-link">Prerequisites</a><a href="#installation" class="otp-link">Installation</a><a href="#first-launch" class="otp-link">First launch &amp; deployment modes</a><a href="#add-account" class="otp-link">Accounts</a><a href="#import" class="otp-link">Import statements</a><a href="#statements" class="otp-link">Statement coverage &amp; reconciliation</a><a href="#transactions" class="otp-link">Transactions</a><a href="#payees" class="otp-link">Classify &amp; recurring payments</a><a href="#cheques" class="otp-link">Chequebooks</a><a href="#credit" class="otp-link">Credit &amp; AECB reports</a><a href="#brokers" class="otp-link">Brokers &amp; portfolio</a><a href="#holdings" class="otp-link">Holdings</a><a href="#inv-history" class="otp-link">Investment activity</a><a href="#watchlist" class="otp-link">Live watchlist</a><a href="#properties" class="otp-link">Real Estate</a><a href="#tangibles" class="otp-link">Tangibles</a><a href="#pots" class="otp-link">Pots &amp; goals</a><a href="#planner" class="otp-link">Monthly Planner</a><a href="#catalog" class="otp-link">Product Catalog</a><a href="#alerts" class="otp-link">Alerts &amp; KFS history</a><a href="#offers" class="otp-link">Offers &amp; campaign history</a><a href="#intel-setup" class="otp-link">Optional Intel setup</a><a href="#bank-agents" class="otp-link">Bank Agents</a><a href="#copilot" class="otp-link">Copilot &amp; agent integrations</a><a href="#banks" class="otp-link">Statement parser coverage</a><a href="#privacy" class="otp-link">Storage &amp; connections</a><a href="#tips" class="otp-link">Shortcuts &amp; backups</a></aside></div>
 
 <script>
   // Copy button
@@ -802,6 +396,8 @@ VITE_API_URL=<span class="s">http://localhost:3001</span></pre>
     navigator.clipboard.writeText(pre.innerText).then(() => {
       btn.textContent = 'Copied!';
       setTimeout(() => btn.textContent = 'Copy', 1800);
+    }).catch(() => {
+      btn.textContent = 'Select code to copy';
     });
   }
 
